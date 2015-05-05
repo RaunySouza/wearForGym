@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="android:Theme.Material.Light">
+        <item name="android:colorPrimary">#578A7C</item>
+        <item name="android:colorPrimaryDark">#446f63</item>
+        <item name="android:windowContentTransitions">true</item>
+
+        
+    </style>
+</resources>
