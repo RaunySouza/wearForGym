@@ -1,4 +1,4 @@
-package rauny.com.br.wearforgym.recyclerView;
+package br.com.rauny.wearforgym.recyclerView;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

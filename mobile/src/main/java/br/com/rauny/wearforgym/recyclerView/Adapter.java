@@ -1,4 +1,4 @@
-package rauny.com.br.wearforgym.recyclerView;
+package br.com.rauny.wearforgym.recyclerView;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,8 +9,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import rauny.com.br.wearforgym.R;
-import rauny.com.br.wearforgym.model.Time;
+import br.com.rauny.wearforgym.R;
+import br.com.rauny.wearforgym.model.Time;
 
 /**
  * @author raunysouza

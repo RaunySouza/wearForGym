@@ -1,4 +1,4 @@
-package rauny.com.br.wearforgym.recyclerView;
+package br.com.rauny.wearforgym.recyclerView;
 
 import android.content.Context;
 import android.content.res.TypedArray;

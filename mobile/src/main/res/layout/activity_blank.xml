@@ -7,7 +7,7 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:transitionName="robot"
-                tools:context="rauny.com.br.wearforgym.BlankActivity">
+                tools:context="br.com.rauny.wearforgym.BlankActivity">
 
     <TextView
         android:text="@string/hello_world"

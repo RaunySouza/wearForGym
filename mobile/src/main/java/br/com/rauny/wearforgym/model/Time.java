@@ -1,4 +1,4 @@
-package rauny.com.br.wearforgym.model;
+package br.com.rauny.wearforgym.model;
 
 /**
  * @author raunysouza

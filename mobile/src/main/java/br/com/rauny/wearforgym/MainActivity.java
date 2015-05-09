@@ -1,29 +1,23 @@
-package rauny.com.br.wearforgym;
+package br.com.rauny.wearforgym;
 
-import android.app.ActionBar;
 import android.app.Activity;
-import android.app.ActivityOptions;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rauny.com.br.wearforgym.model.Time;
-import rauny.com.br.wearforgym.recyclerView.Adapter;
-import rauny.com.br.wearforgym.recyclerView.DividerItemDecoration;
-import rauny.com.br.wearforgym.recyclerView.RecyclerItemClickListener;
+import br.com.rauny.wearforgym.recyclerView.RecyclerItemClickListener;
+import br.com.rauny.wearforgym.model.Time;
+import br.com.rauny.wearforgym.recyclerView.Adapter;
+import br.com.rauny.wearforgym.recyclerView.DividerItemDecoration;
 
 
 public class MainActivity extends Activity {
@@ -52,8 +46,14 @@ public class MainActivity extends Activity {
 				new RecyclerItemClickListener.OnItemClickListener() {
 					@Override
 					public void onItemClick(View view, int position) {
-						Intent intent = new Intent(getApplicationContext(), BlankActivity.class);
-						startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, timeRecyclerView, "robot").toBundle());
+						Vibrator vibrator = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
+						long[] vibrationPattern = {0, 200, 500};
+						//-1 - don't repeat
+						final int indexInPatternToRepeat = 0;
+						vibrator.vibrate(vibrationPattern, indexInPatternToRepeat);
+
+//						Intent intent = new Intent(MainActivity.this, BlankActivity.class);
+//						startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, view, "fade").toBundle());
 					}
 				})
 		);

@@ -1,4 +1,4 @@
-package rauny.com.br.wearforgym;
+package br.com.rauny.wearforgym;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

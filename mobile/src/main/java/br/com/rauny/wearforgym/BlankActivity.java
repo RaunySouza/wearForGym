@@ -1,11 +1,9 @@
-package rauny.com.br.wearforgym;
+package br.com.rauny.wearforgym;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import rauny.com.br.wearforgym.R;
 
 public class BlankActivity extends Activity {
 
