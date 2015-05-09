@@ -5,12 +5,22 @@
              android:background="#578A7C"
              tools:context="br.com.rauny.wearforgym.fragment.TimerFragment">
 
-    <ImageView
-        android:id="@+id/vector"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:rotation="90"
-        android:src="@drawable/animated_vector"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/vector"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:rotation="90"-->
+        <!--android:src="@drawable/animated_vector"/>-->
+
+    <ProgressBar
+        android:id="@+id/time_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:progress="100"
+        android:rotation="-90"
+        android:progressDrawable="@drawable/time_progress"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
