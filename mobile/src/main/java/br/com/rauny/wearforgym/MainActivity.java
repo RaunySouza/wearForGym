@@ -1,57 +1,48 @@
 package br.com.rauny.wearforgym;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.view.View;
-import android.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.rauny.wearforgym.annotation.Layout;
 import br.com.rauny.wearforgym.model.Time;
-import br.com.rauny.wearforgym.recyclerView.Adapter;
+import br.com.rauny.wearforgym.navigationDrawer.NavigationDrawerListItem;
+import br.com.rauny.wearforgym.navigationDrawer.NavigationDrawerViewAdapter;
+import br.com.rauny.wearforgym.navigationDrawer.ProfileInfo;
 import br.com.rauny.wearforgym.recyclerView.DividerItemDecoration;
 import br.com.rauny.wearforgym.recyclerView.RecyclerItemClickListener;
+import br.com.rauny.wearforgym.timerRecyclerView.TimeRecyclerViewAdapter;
 
-
-public class MainActivity extends Activity {
-
-	private RecyclerView timeRecyclerView;
+@Layout(R.layout.activity_main)
+public class MainActivity extends BaseActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
-		setActionBar(toolbar);
-
-		final List<Time> times = new ArrayList<>();
-		times.add(new Time(10000, "10", Time.Unit.SECONDS));
-		times.add(new Time(20000, "20", Time.Unit.SECONDS));
-		times.add(new Time(30000, "30", Time.Unit.SECONDS));
-		times.add(new Time(40000, "40", Time.Unit.SECONDS));
-		times.add(new Time(50000, "50", Time.Unit.SECONDS));
-
-		timeRecyclerView = (RecyclerView) findViewById(R.id.time_recycler_view);
+		RecyclerView timeRecyclerView = (RecyclerView) findViewById(R.id.time_recycler_view);
 		timeRecyclerView.setHasFixedSize(true);
 		timeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 		timeRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-		timeRecyclerView.setItemAnimator(new DefaultItemAnimator());
-		timeRecyclerView.setAdapter(new Adapter(times));
+		timeRecyclerView.setAdapter(new TimeRecyclerViewAdapter(getTimeList()));
 		timeRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this,
 				new RecyclerItemClickListener.OnItemClickListener() {
 					@Override
 					public void onItemClick(View view, int position) {
-						Intent intent = new Intent(MainActivity.this, BlankActivity.class);
-						startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, view, "awesomeTransition").toBundle());
+						Log.d("MainActivity", "Touch Recieved");
 					}
 				})
 		);
@@ -59,23 +50,18 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_main, menu);
-		return true;
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu_main, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings) {
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
+	private List<Time> getTimeList() {
+		List<Time> times = new ArrayList<>();
+		times.add(new Time(10000, "10", Time.Unit.SECONDS));
+		times.add(new Time(20000, "20", Time.Unit.SECONDS));
+		times.add(new Time(30000, "30", Time.Unit.SECONDS));
+		times.add(new Time(40000, "40", Time.Unit.SECONDS));
+		times.add(new Time(50000, "50", Time.Unit.SECONDS));
+		return times;
 	}
 }

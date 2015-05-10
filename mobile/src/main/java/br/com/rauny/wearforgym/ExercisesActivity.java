@@ -1,28 +1,25 @@
 package br.com.rauny.wearforgym;
 
-import android.app.Activity;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toolbar;
 
-public class BlankActivity extends Activity {
+import br.com.rauny.wearforgym.annotation.Layout;
+
+@Layout(R.layout.activity_exercises)
+public class ExercisesActivity extends BaseActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_blank);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		setActionBar(toolbar);
-		getActionBar().setDisplayShowTitleEnabled(false);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_blank, menu);
+		getMenuInflater().inflate(R.menu.menu_exercises, menu);
 		return true;
 	}
 

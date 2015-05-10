@@ -1,4 +1,4 @@
-package br.com.rauny.wearforgym.recyclerView;
+package br.com.rauny.wearforgym.timerRecyclerView;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,11 +15,11 @@ import br.com.rauny.wearforgym.model.Time;
 /**
  * @author raunysouza
  */
-public class Adapter extends RecyclerView.Adapter {
+public class TimeRecyclerViewAdapter extends RecyclerView.Adapter {
 
 	private List<Time> times = new ArrayList<>();
 
-	public Adapter(List<Time> times) {
+	public TimeRecyclerViewAdapter(List<Time> times) {
 		this.times = times;
 	}
 
