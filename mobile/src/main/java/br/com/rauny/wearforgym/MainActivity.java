@@ -1,23 +1,24 @@
 package br.com.rauny.wearforgym;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.rauny.wearforgym.recyclerView.RecyclerItemClickListener;
 import br.com.rauny.wearforgym.model.Time;
 import br.com.rauny.wearforgym.recyclerView.Adapter;
 import br.com.rauny.wearforgym.recyclerView.DividerItemDecoration;
+import br.com.rauny.wearforgym.recyclerView.RecyclerItemClickListener;
 
 
 public class MainActivity extends Activity {
@@ -29,36 +30,32 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		final List<Time> ITEMS = new ArrayList<>();
-		ITEMS.add(new Time(10000, "10", Time.Unit.SECONDS));
-		ITEMS.add(new Time(20000, "20", Time.Unit.SECONDS));
-		ITEMS.add(new Time(30000, "30", Time.Unit.SECONDS));
-		ITEMS.add(new Time(40000, "40", Time.Unit.SECONDS));
-		ITEMS.add(new Time(50000, "50", Time.Unit.SECONDS));
+		Toolbar toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
+		setActionBar(toolbar);
+
+		final List<Time> times = new ArrayList<>();
+		times.add(new Time(10000, "10", Time.Unit.SECONDS));
+		times.add(new Time(20000, "20", Time.Unit.SECONDS));
+		times.add(new Time(30000, "30", Time.Unit.SECONDS));
+		times.add(new Time(40000, "40", Time.Unit.SECONDS));
+		times.add(new Time(50000, "50", Time.Unit.SECONDS));
 
 		timeRecyclerView = (RecyclerView) findViewById(R.id.time_recycler_view);
 		timeRecyclerView.setHasFixedSize(true);
 		timeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 		timeRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
 		timeRecyclerView.setItemAnimator(new DefaultItemAnimator());
-		timeRecyclerView.setAdapter(new Adapter(ITEMS));
+		timeRecyclerView.setAdapter(new Adapter(times));
 		timeRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this,
 				new RecyclerItemClickListener.OnItemClickListener() {
 					@Override
 					public void onItemClick(View view, int position) {
-						Vibrator vibrator = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
-						long[] vibrationPattern = {0, 200, 500};
-						//-1 - don't repeat
-						final int indexInPatternToRepeat = 0;
-						vibrator.vibrate(vibrationPattern, indexInPatternToRepeat);
-
-//						Intent intent = new Intent(MainActivity.this, BlankActivity.class);
-//						startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, view, "fade").toBundle());
+						Intent intent = new Intent(MainActivity.this, BlankActivity.class);
+						startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, view, "awesomeTransition").toBundle());
 					}
 				})
 		);
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

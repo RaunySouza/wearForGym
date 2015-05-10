@@ -6,8 +6,8 @@ package br.com.rauny.wearforgym.model;
 public class Time {
 
 	public enum Unit {
-		SECONDS("SEGUNDOS"),
-		MINUTES("MINUTOS")
+		SECONDS("SEGUNDO(S)"),
+		MINUTES("MINUTO(S)")
 		;
 
 		private String name;

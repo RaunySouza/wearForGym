@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toolbar;
 
 public class BlankActivity extends Activity {
 
@@ -11,6 +12,10 @@ public class BlankActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_blank);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setActionBar(toolbar);
+		getActionBar().setDisplayShowTitleEnabled(false);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 
