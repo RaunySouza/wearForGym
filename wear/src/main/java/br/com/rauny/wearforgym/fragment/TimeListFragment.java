@@ -59,6 +59,7 @@ public class TimeListFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 		listView = (WearableListView) getActivity().findViewById(R.id.times_list_view);
 		listView.setAdapter(new TimeListAdapter(getActivity().getApplicationContext(), ITEMS));
+		listView.setGreedyTouchMode(true);
 		listView.setClickListener(new WearableListView.ClickListener() {
 
 			@Override

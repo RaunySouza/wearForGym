@@ -121,10 +121,8 @@ public class TimerFragment extends Fragment {
 				public void onFinish() {
 					resetTimer();
 					vibrate(500);
-					timerState.isTimerRunning = false;
 					notifyTimeOut();
-					resetTimeAnimation();
-					mTimeProgress.clearAnimation();
+
 				}
 			}.start();
 			startAnimation(timerState.selectedTime);
@@ -136,8 +134,6 @@ public class TimerFragment extends Fragment {
 			timerState.timer.cancel();
 			timerState.timer = null;
 			resetTimer();
-			timerState.isTimerRunning = false;
-			resetTimeAnimation();
 		}
 	}
 
@@ -147,6 +143,10 @@ public class TimerFragment extends Fragment {
 		mSecond.setText(String.format("%02d", timerState.selectedTime / 1000));
 		mMillisecond.setText("000");
 		mStartIcon.setImageDrawable(getActivity().getDrawable(R.drawable.start));
+		if (timerState.isTimerRunning) {
+			resetTimeAnimation();
+			timerState.isTimerRunning = false;
+		}
 	}
 
 	private void notifyTimeOut() {
@@ -161,8 +161,9 @@ public class TimerFragment extends Fragment {
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putLong(SELECTED_TIME, time);
 		editor.apply();
+		timerState.timer.cancel();
 		timerState.selectedTime = time;
-		mSecond.setText(String.format("%02d", timerState.selectedTime / 1000));
+		resetTimer();
 	}
 
 	private void startAnimation(long duration) {
