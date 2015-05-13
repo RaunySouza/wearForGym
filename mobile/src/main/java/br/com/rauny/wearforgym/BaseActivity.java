@@ -35,6 +35,7 @@ public abstract class BaseActivity extends ActionBarActivity {
 		Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 		setSupportActionBar(toolbar);
 
+		final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 		RecyclerView drawerView = (RecyclerView) findViewById(R.id.navigation_drawer);
 		drawerView.setLayoutManager(new LinearLayoutManager(this));
 		drawerView.setAdapter(new NavigationDrawerViewAdapter(this, getDrawerItems(), getProfileInfo()));
@@ -54,11 +55,12 @@ public abstract class BaseActivity extends ActionBarActivity {
 										break;
 									}
 								}
+								drawerLayout.closeDrawers();
 							}
 						})
 		);
 
-		DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+
 		ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
 				this,  drawerLayout, toolbar,
 				R.string.opening_drawer, R.string.closing_drawer
