@@ -2,4 +2,4 @@
 
 Making your training efficient!
 
-https://travis-ci.org/RaunySouza/wearForGym.svg?branch=master
+![alt tag](https://travis-ci.org/RaunySouza/wearForGym.svg?branch=master)
