@@ -1,0 +1,21 @@
+language: android
+
+sudo: required
+
+android:
+  components:
+    - android-22
+    - build-tools-22.0.1
+    - platform-tools
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - extra-google-google_play_services
+
+    # Specify at least one system image,
+    # if you need to run emulator(s) during your tests
+    # - sys-img-x86-android-22
+
+before_script:
+    - GRADLE_OPTS="-Xms1g -Xmx3g -XX:MaxPermSize=3g"
+
+script: "./gradlew build test -Dpre-dex=false"

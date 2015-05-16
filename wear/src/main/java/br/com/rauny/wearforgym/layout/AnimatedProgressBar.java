@@ -16,7 +16,6 @@ public class AnimatedProgressBar extends ProgressBar implements Animatable {
 
 	private Animator mAnimator;
 	private long mStartTime;
-	private long mDuration;
 	private boolean mRunning;
 
 	private long mCurrentTime;
@@ -45,9 +44,7 @@ public class AnimatedProgressBar extends ProgressBar implements Animatable {
 			}
 		};
 
-		mDuration = mDuration > 0 ? mDuration : start;
-
-		mAnimator = createAnimator(mDuration, (int) start, 0);
+		mAnimator = createAnimator(start, (int) start, 0);
 		mAnimator.start();
 		mInternalCounter.start();
 		mRunning = true;
@@ -105,9 +102,5 @@ public class AnimatedProgressBar extends ProgressBar implements Animatable {
 		mStartTime = time;
 		setMax((int) time);
 		setProgress((int) time);
-	}
-
-	public void setDuration(long duration) {
-		mDuration = duration;
 	}
 }

@@ -7,8 +7,6 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
 
-import br.com.rauny.wearforgym.constant.Extras;
-
 /**
  * @author raunysouza
  */

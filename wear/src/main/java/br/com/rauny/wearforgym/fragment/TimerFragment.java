@@ -3,6 +3,7 @@ package br.com.rauny.wearforgym.fragment;
 import android.animation.Animator;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +13,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.wearable.activity.ConfirmationActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +24,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import br.com.rauny.wearforgym.MainActivity;
 import br.com.rauny.wearforgym.R;
+import br.com.rauny.wearforgym.constant.Preferences;
 import br.com.rauny.wearforgym.layout.AnimatedProgressBar;
 import br.com.rauny.wearforgym.layout.CountDownTimerLayout;
 import br.com.rauny.wearforgym.service.TimerService;
@@ -29,9 +35,6 @@ import br.com.rauny.wearforgym.service.TimerService;
  * @author raunysouza
  */
 public class TimerFragment extends Fragment implements ServiceConnection {
-
-	public static final String TIMER_PREFERENCE_NAME = "timerPrefs";
-	public static final String SELECTED_TIME = "selectedTime";
 
 	private OnFragmentInteractionListener mListener;
 	private SharedPreferences mSharedPreferences;
@@ -65,8 +68,8 @@ public class TimerFragment extends Fragment implements ServiceConnection {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		mSharedPreferences = getActivity().getSharedPreferences(TIMER_PREFERENCE_NAME, Context.MODE_PRIVATE);
-		mTimerState.selectedTime = mSharedPreferences.getLong(SELECTED_TIME, 10000);
+		mSharedPreferences = getActivity().getSharedPreferences(Preferences.TIMER_PREFERENCE_NAME, Context.MODE_PRIVATE);
+		mTimerState.selectedTime = mSharedPreferences.getLong(Preferences.SELECTED_TIME, 10000);
 
 		mStartStopButton = (LinearLayout) getActivity().findViewById(R.id.startStopButton);
 		mStartIcon = (ImageView) getActivity().findViewById(R.id.startIcon);
@@ -116,10 +119,24 @@ public class TimerFragment extends Fragment implements ServiceConnection {
 	public void onStop() {
 		if (mTimerState.isTimerRunning) {
 			mTimerService.startTimer(mTimerState.remainTime);
+			createNotification();
 		}
-
+		mCountDownTimer.stop();
 		super.onStop();
 	}
+
+	private void createNotification() {
+		Intent intent = new Intent(getActivity(), MainActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent, 0);
+
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity())
+				.setContentText("Rauny")
+				.setContentTitle("Teste")
+				.setContentIntent(pendingIntent);
+		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getActivity());
+		notificationManager.notify(12345, builder.build());
+	}
+
 
 	private void vibrate(int milliseconds) {
 		Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
@@ -135,7 +152,7 @@ public class TimerFragment extends Fragment implements ServiceConnection {
 
 	public void updateTimerTime(long time) {
 		SharedPreferences.Editor editor = mSharedPreferences.edit();
-		editor.putLong(SELECTED_TIME, time);
+		editor.putLong(Preferences.SELECTED_TIME, time);
 		editor.apply();
 		mCountDownTimer.stop();
 		mTimerState.selectedTime = time;
