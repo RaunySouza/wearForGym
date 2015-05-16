@@ -5,7 +5,7 @@
              android:background="@color/primaryColor"
              tools:context="br.com.rauny.wearforgym.fragment.TimerFragment">
 
-    <ProgressBar
+    <br.com.rauny.wearforgym.layout.AnimatedProgressBar
         android:id="@+id/time_progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
@@ -15,61 +15,13 @@
         android:progressDrawable="@drawable/time_progress"
         />
 
-    <LinearLayout
+    <br.com.rauny.wearforgym.layout.CountDownTimerLayout
+        android:id="@+id/count_down_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dip"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/hours"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00"
-            android:textSize="20dp"
-            android:textColor="@color/backgroundColor"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=":"
-            android:textSize="20dp"
-            android:textColor="@color/backgroundColor"/>
-        <TextView
-            android:id="@+id/minutes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00"
-            android:textSize="20dp"
-            android:textColor="@color/backgroundColor"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=":"
-            android:textSize="20dp"
-            android:textColor="@color/backgroundColor"/>
-        <TextView
-            android:id="@+id/seconds"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00"
-            android:textStyle="bold"
-            android:textSize="20dp"
-            android:textColor="@color/secondaryColor"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="."
-            android:textSize="20dp"
-            android:textColor="@color/secondaryColor"/>
-        <TextView
-            android:id="@+id/milliseconds"
-            android:layout_width="30dip"
-            android:layout_height="wrap_content"
-            android:text="000"
-            android:textSize="16dp"
-            android:textColor="@color/secondaryColor"/>
-    </LinearLayout>
+        android:orientation="horizontal" />
 
     <LinearLayout
         android:layout_width="wrap_content"

@@ -8,14 +8,14 @@ import android.support.wearable.view.WatchViewStub;
 import android.view.WindowManager;
 
 import br.com.rauny.wearforgym.adapter.GridPagerAdapter;
-import br.com.rauny.wearforgym.fragment.TimerFragment;
 import br.com.rauny.wearforgym.fragment.TimeListFragment;
+import br.com.rauny.wearforgym.fragment.TimerFragment;
 import br.com.rauny.wearforgym.model.Time;
 
 public class MainActivity extends Activity implements TimeListFragment.OnFragmentInteractionListener, TimerFragment.OnFragmentInteractionListener {
 
-	private GridPagerAdapter adapter;
-	private GridViewPager gridViewPager;
+	private GridPagerAdapter mAdapter;
+	private GridViewPager mGridViewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,18 +26,19 @@ public class MainActivity extends Activity implements TimeListFragment.OnFragmen
 		stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
 			@Override
 			public void onLayoutInflated(WatchViewStub stub) {
-				gridViewPager = (GridViewPager) findViewById(R.id.pager);
-				adapter = new GridPagerAdapter(getFragmentManager());
-				gridViewPager.setAdapter(adapter);
+				mGridViewPager = (GridViewPager) findViewById(R.id.pager);
+				mAdapter = new GridPagerAdapter(getFragmentManager());
+				mGridViewPager.setAdapter(mAdapter);
 			}
 		});
 	}
 
+
 	@Override
 	public void onFragmentInteraction(Time time) {
-		TimerFragment timerFragment = (TimerFragment) adapter.getFragment(0, 0);
+		TimerFragment timerFragment = (TimerFragment) mAdapter.getFragment(0, 0);
 		timerFragment.updateTimerTime(time.getTime());
-		gridViewPager.scrollTo(0, 0);
+		mGridViewPager.scrollTo(0, 0);
 	}
 
 	@Override

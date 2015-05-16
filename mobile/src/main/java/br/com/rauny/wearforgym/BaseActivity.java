@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ import br.com.rauny.wearforgym.recyclerView.RecyclerItemClickListener;
  */
 public abstract class BaseActivity extends ActionBarActivity {
 
+	private DrawerLayout drawerLayout;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,8 +38,8 @@ public abstract class BaseActivity extends ActionBarActivity {
 		Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 		setSupportActionBar(toolbar);
 
-		final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-		RecyclerView drawerView = (RecyclerView) findViewById(R.id.navigation_drawer);
+		drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+		final RecyclerView drawerView = (RecyclerView) findViewById(R.id.navigation_drawer);
 		drawerView.setLayoutManager(new LinearLayoutManager(this));
 		drawerView.setAdapter(new NavigationDrawerViewAdapter(this, getDrawerItems(), getProfileInfo()));
 		drawerView.addOnItemTouchListener(new RecyclerItemClickListener(this,
@@ -87,5 +90,19 @@ public abstract class BaseActivity extends ActionBarActivity {
 
 		Layout layout = this.getClass().getAnnotation(Layout.class);
 		setContentView(layout.value());
+	}
+
+	protected DrawerLayout getDrawer() {
+		return drawerLayout;
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+			drawerLayout.closeDrawers();
+		}
+		else {
+			super.onBackPressed();
+		}
 	}
 }

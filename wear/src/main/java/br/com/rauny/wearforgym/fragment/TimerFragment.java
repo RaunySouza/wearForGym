@@ -1,48 +1,49 @@
 package br.com.rauny.wearforgym.fragment;
 
 import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.wearable.activity.ConfirmationActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import br.com.rauny.wearforgym.R;
+import br.com.rauny.wearforgym.layout.AnimatedProgressBar;
+import br.com.rauny.wearforgym.layout.CountDownTimerLayout;
+import br.com.rauny.wearforgym.service.TimerService;
 
 /**
  * @author raunysouza
  */
-public class TimerFragment extends Fragment {
+public class TimerFragment extends Fragment implements ServiceConnection {
 
 	public static final String TIMER_PREFERENCE_NAME = "timerPrefs";
 	public static final String SELECTED_TIME = "selectedTime";
 
 	private OnFragmentInteractionListener mListener;
-	private SharedPreferences sharedPreferences;
+	private SharedPreferences mSharedPreferences;
+	private TimerService mTimerService;
 
-	private TimerState timerState;
+	private TimerState mTimerState;
 
-	private TextView mHour;
-	private TextView mMinute;
-	private TextView mSecond;
-	private TextView mMillisecond;
 	private LinearLayout mStartStopButton;
 	private ImageView mStartIcon;
-	private ProgressBar mTimeProgress;
+	private AnimatedProgressBar mAnimatedProgressBar;
+
+	private CountDownTimerLayout mCountDownTimer;
 
 	public static TimerFragment newInstance() {
 		TimerFragment fragment = new TimerFragment();
@@ -52,7 +53,7 @@ public class TimerFragment extends Fragment {
 	}
 
 	public TimerFragment() {
-		timerState = new TimerState();
+		mTimerState = new TimerState();
 	}
 
 	@Override
@@ -63,24 +64,29 @@ public class TimerFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		mHour = (TextView) getActivity().findViewById(R.id.hours);
-		mMinute = (TextView) getActivity().findViewById(R.id.minutes);
-		mSecond = (TextView) getActivity().findViewById(R.id.seconds);
-		mMillisecond = (TextView) getActivity().findViewById(R.id.milliseconds);
+
+		mSharedPreferences = getActivity().getSharedPreferences(TIMER_PREFERENCE_NAME, Context.MODE_PRIVATE);
+		mTimerState.selectedTime = mSharedPreferences.getLong(SELECTED_TIME, 10000);
+
 		mStartStopButton = (LinearLayout) getActivity().findViewById(R.id.startStopButton);
 		mStartIcon = (ImageView) getActivity().findViewById(R.id.startIcon);
-		mTimeProgress = (ProgressBar) getActivity().findViewById(R.id.time_progress);
-		sharedPreferences = getActivity().getSharedPreferences(TIMER_PREFERENCE_NAME, Context.MODE_PRIVATE);
+		mAnimatedProgressBar = (AnimatedProgressBar) getActivity().findViewById(R.id.time_progress);
+		mAnimatedProgressBar.setStartTime(mTimerState.selectedTime);
 
-		timerState.selectedTime = sharedPreferences.getLong(SELECTED_TIME, 10000);
-		mSecond.setText(String.format("%02d", timerState.selectedTime / 1000));
+		mCountDownTimer = (CountDownTimerLayout) getActivity().findViewById(R.id.count_down_timer);
+		mCountDownTimer.setStartTime(mTimerState.selectedTime);
+		mCountDownTimer.addCountDownTimerListener(new CountDownTimerListenerImpl());
 
 		mStartStopButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startTimer();
+				mCountDownTimer.start();
 			}
 		});
+
+		Intent intent = new Intent(getActivity(), TimerService.class);
+		getActivity().getApplicationContext().startService(intent);
+		getActivity().getApplicationContext().bindService(intent, this, Context.BIND_AUTO_CREATE);
 	}
 
 	@Override
@@ -95,9 +101,24 @@ public class TimerFragment extends Fragment {
 	}
 
 	@Override
+	public void onDestroy() {
+		getActivity().getApplicationContext().unbindService(this);
+		super.onDestroy();
+	}
+
+	@Override
 	public void onDetach() {
 		super.onDetach();
 		mListener = null;
+	}
+
+	@Override
+	public void onStop() {
+		if (mTimerState.isTimerRunning) {
+			mTimerService.startTimer(mTimerState.remainTime);
+		}
+
+		super.onStop();
 	}
 
 	private void vibrate(int milliseconds) {
@@ -105,104 +126,79 @@ public class TimerFragment extends Fragment {
 		vibrator.vibrate(milliseconds);
 	}
 
-	private void startTimer() {
-		if (!timerState.isTimerRunning) {
-			timerState.timer = new CountDownTimer(timerState.selectedTime, 1) {
-				@Override
-				public void onTick(long millisUntilFinished) {
-					mHour.setText(String.format("%02d", millisUntilFinished / 1000 / 60 / 60));
-					mMinute.setText(String.format("%02d", millisUntilFinished / 1000 / 60));
-					mSecond.setText(String.format("%02d", millisUntilFinished / 1000));
-					mMillisecond.setText(String.format("%03d", millisUntilFinished % 1000));
-					timerState.remainTime = millisUntilFinished;
-				}
-
-				@Override
-				public void onFinish() {
-					resetTimer();
-					vibrate(500);
-					notifyTimeOut();
-
-				}
-			}.start();
-			startAnimation(timerState.selectedTime);
-			mStartIcon.setImageDrawable(getActivity().getDrawable(R.drawable.stop));
-			vibrate(30);
-			timerState.isTimerRunning = true;
-		}
-		else {
-			timerState.timer.cancel();
-			timerState.timer = null;
-			resetTimer();
-		}
-	}
-
-	private void resetTimer() {
-		mHour.setText("00");
-		mMinute.setText("00");
-		mSecond.setText(String.format("%02d", timerState.selectedTime / 1000));
-		mMillisecond.setText("000");
-		mStartIcon.setImageDrawable(getActivity().getDrawable(R.drawable.start));
-		if (timerState.isTimerRunning) {
-			resetTimeAnimation();
-			timerState.isTimerRunning = false;
-		}
-	}
-
 	private void notifyTimeOut() {
 		Intent intent = new Intent(this.getActivity(), ConfirmationActivity.class);
-		intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-				ConfirmationActivity.SUCCESS_ANIMATION);
+		intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.SUCCESS_ANIMATION);
 		intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, "Time Out!");
 		startActivity(intent);
 	}
 
 	public void updateTimerTime(long time) {
-		SharedPreferences.Editor editor = sharedPreferences.edit();
+		SharedPreferences.Editor editor = mSharedPreferences.edit();
 		editor.putLong(SELECTED_TIME, time);
 		editor.apply();
-		timerState.timer.cancel();
-		timerState.selectedTime = time;
-		resetTimer();
+		mCountDownTimer.stop();
+		mTimerState.selectedTime = time;
+		mAnimatedProgressBar.setStartTime(time);
+		mCountDownTimer.setStartTime(time);
+		mCountDownTimer.reset();
 	}
 
-	private void startAnimation(long duration) {
-		mTimeProgress.clearAnimation();
-		if (timerState.currentAnimator != null && timerState.currentAnimator.isRunning()) {
-			timerState.currentAnimator.end();
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder service) {
+		TimerService.TimerBinder binder = (TimerService.TimerBinder) service;
+		mTimerService = binder.getService();
+		long timeInService = mTimerService.getCurrentTime();
+		if (timeInService > 0) {
+			mCountDownTimer.startFrom(timeInService);
 		}
-		mTimeProgress.setMax((int) duration);
-		timerState.currentAnimator = ObjectAnimator.ofInt(mTimeProgress, "progress", (int) duration, 0);
-		timerState.currentAnimator.setDuration(duration);
-		timerState.currentAnimator.setInterpolator(new LinearInterpolator());
-		timerState.currentAnimator.start();
 	}
 
-	private void resetTimeAnimation() {
-		mTimeProgress.clearAnimation();
-		if (timerState.currentAnimator != null && timerState.currentAnimator.isRunning()) {
-			timerState.currentAnimator.end();
-		}
-
-		final int remainTime = (int) timerState.remainTime;
-		int max = (int) timerState.selectedTime;
-		mTimeProgress.setMax(max);
-		timerState.currentAnimator = ObjectAnimator.ofInt(mTimeProgress, "progress", remainTime, max);
-		timerState.currentAnimator.setDuration(500);
-		timerState.currentAnimator.setInterpolator(new LinearInterpolator());
-		timerState.currentAnimator.start();
+	@Override
+	public void onServiceDisconnected(ComponentName name) {
+		mTimerService = null;
 	}
 
 	private class TimerState {
 		private long selectedTime = 0;
 		private long remainTime = 0;
 		private boolean isTimerRunning;
-		private CountDownTimer timer;
-		private Animator currentAnimator;
 	}
 
 	public interface OnFragmentInteractionListener {
 		void onFragmentInteraction(Uri uri);
 	}
 
+	private class CountDownTimerListenerImpl implements CountDownTimerLayout.CountDownTimerListener {
+
+		@Override
+		public void onTick(long millisUntilFinished) {
+			mTimerState.remainTime = millisUntilFinished;
+		}
+
+		@Override
+		public void onFinish() {
+			vibrate(500);
+			notifyTimeOut();
+			mTimerState.remainTime = 0;
+		}
+
+		@Override
+		public void onStart(long initial) {
+			mAnimatedProgressBar.startFrom(initial);
+			mStartIcon.setImageDrawable(getActivity().getDrawable(R.drawable.stop));
+			vibrate(30);
+			mTimerState.isTimerRunning = true;
+		}
+
+		@Override
+		public void onResetTimer() {
+			mStartIcon.setImageDrawable(getActivity().getDrawable(R.drawable.start));
+			if (mTimerState.isTimerRunning) {
+				mAnimatedProgressBar.reverse();
+				mTimerState.isTimerRunning = false;
+				mTimerState.remainTime = 0;
+			}
+		}
+	}
 }
