@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.rauny.wearforgym.annotation.Layout;
-import br.com.rauny.wearforgym.model.Time;
+import br.com.rauny.wearforgym.core.model.Time;
 import br.com.rauny.wearforgym.navigationDrawer.NavigationDrawerListItem;
 import br.com.rauny.wearforgym.navigationDrawer.NavigationDrawerViewAdapter;
 import br.com.rauny.wearforgym.navigationDrawer.ProfileInfo;

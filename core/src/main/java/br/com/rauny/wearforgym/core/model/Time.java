@@ -1,4 +1,4 @@
-package br.com.rauny.wearforgym.model;
+package br.com.rauny.wearforgym.core.model;
 
 /**
  * @author raunysouza
@@ -6,8 +6,8 @@ package br.com.rauny.wearforgym.model;
 public class Time {
 
 	public enum Unit {
-		SECONDS("SEGUNDO(S)"),
-		MINUTES("MINUTO(S)")
+		SECONDS("SEGUNDOS"),
+		MINUTES("MINUTOS")
 		;
 
 		private String name;

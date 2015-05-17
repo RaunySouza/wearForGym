@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import br.com.rauny.wearforgym.adapter.GridPagerAdapter;
 import br.com.rauny.wearforgym.fragment.TimeListFragment;
 import br.com.rauny.wearforgym.fragment.TimerFragment;
-import br.com.rauny.wearforgym.model.Time;
+import br.com.rauny.wearforgym.core.model.Time;
 
 public class MainActivity extends Activity implements TimeListFragment.OnFragmentInteractionListener, TimerFragment.OnFragmentInteractionListener {
 

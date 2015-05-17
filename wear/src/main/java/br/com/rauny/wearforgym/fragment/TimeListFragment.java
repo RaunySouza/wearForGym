@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.rauny.wearforgym.R;
-import br.com.rauny.wearforgym.model.Time;
+import br.com.rauny.wearforgym.core.model.Time;
 import br.com.rauny.wearforgym.wearableListView.TimeListAdapter;
 
 /**

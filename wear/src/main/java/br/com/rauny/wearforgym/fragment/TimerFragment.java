@@ -2,7 +2,6 @@ package br.com.rauny.wearforgym.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,17 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.wearable.activity.ConfirmationActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RemoteViews;
 
-import br.com.rauny.wearforgym.MainActivity;
 import br.com.rauny.wearforgym.R;
 import br.com.rauny.wearforgym.constant.Preferences;
 import br.com.rauny.wearforgym.layout.AnimatedProgressBar;

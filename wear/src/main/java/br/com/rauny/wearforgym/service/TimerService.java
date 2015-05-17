@@ -9,7 +9,6 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 import br.com.rauny.wearforgym.MainActivity;
 import br.com.rauny.wearforgym.R;
@@ -79,15 +78,10 @@ public class TimerService extends Service {
 		Intent intent = new Intent(this, MainActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-		NotificationCompat.WearableExtender wearableExtender =
-				new NotificationCompat.WearableExtender();
-
-		RemoteViews remoteView = new RemoteViews(this.getPackageName(), R.layout.timer_notification);
-
 		NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(this)
-				.setSmallIcon(R.drawable.ic_launcher)
-				.setContentTitle(getString(R.string.timer_done))
-				.setContentText(getString(R.string.timer_done))
+				.setSmallIcon(R.drawable.app_icon)
+				.setContentTitle(getString(R.string.timer_remaining))
+				.setContentText(getString(R.string.timer_remaining))
 				.setContentIntent(pendingIntent)
 				.setOngoing(true)
 				.setUsesChronometer(true)
