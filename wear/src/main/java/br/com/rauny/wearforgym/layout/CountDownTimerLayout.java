@@ -14,7 +14,7 @@ import br.com.rauny.wearforgym.R;
 /**
  * @author raunysouza
  */
-public class CountDownTimerLayout extends LinearLayout implements Animatable{
+public class CountDownTimerLayout extends LinearLayout implements Animatable {
 
 	private CountDownTimerListener mListener;
 	private CountDownTimer mTimer;
@@ -41,6 +41,8 @@ public class CountDownTimerLayout extends LinearLayout implements Animatable{
 		mMinutes = (TextView) getChildAt(2);
 		mSeconds = (TextView) getChildAt(4);
 		mMilliseconds = (TextView) getChildAt(6);
+
+		setOrientation(HORIZONTAL);
 	}
 
 	/**
@@ -57,13 +59,6 @@ public class CountDownTimerLayout extends LinearLayout implements Animatable{
 					mMinutes.setText(String.format("%02d", millisUntilFinished / 1000 / 60));
 					mSeconds.setText(String.format("%02d", millisUntilFinished / 1000));
 					mMilliseconds.setText(String.format("%03d", millisUntilFinished % 1000));
-
-					if (mVibrateOnFinish) {
-						float seconds = millisUntilFinished / 1000;
-						if (seconds % 1 == 0 && seconds <= 5) {
-							vibrate(5);
-						}
-					}
 
 					if (mListener != null) {
 						mListener.onTick(millisUntilFinished);

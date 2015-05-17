@@ -36,6 +36,7 @@ public abstract class BaseActivity extends ActionBarActivity {
 
 	protected void createNavigationDrawer() {
 		Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+		toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 		setSupportActionBar(toolbar);
 
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer);

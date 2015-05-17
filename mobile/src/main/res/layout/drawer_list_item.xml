@@ -15,7 +15,7 @@
         android:layout_marginLeft="18dp"
         android:layout_gravity="center"
         android:layout_marginRight="20dp"
-        android:src="@drawable/ic_launcher"/>
+        android:src="@drawable/app_icon"/>
 
     <TextView
         android:id="@+id/drawer_label"

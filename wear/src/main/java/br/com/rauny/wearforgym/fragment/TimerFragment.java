@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RemoteViews;
 
 import br.com.rauny.wearforgym.MainActivity;
 import br.com.rauny.wearforgym.R;
@@ -116,31 +117,10 @@ public class TimerFragment extends Fragment implements ServiceConnection {
 	public void onStop() {
 		if (mTimerState.isTimerRunning) {
 			mTimerService.startTimer(mTimerState.remainTime);
-			createNotification();
 		}
 		mCountDownTimer.stop();
 		super.onStop();
 	}
-
-	private void createNotification() {
-		Intent intent = new Intent(getActivity(), MainActivity.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent, 0);
-
-		NotificationCompat.WearableExtender wearableExtender =
-				new NotificationCompat.WearableExtender();
-
-		NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(getActivity())
-				.setSmallIcon(R.drawable.ic_launcher)
-				.setContentTitle("Title wearable")
-				.setContentText("Text wearable")
-				.setOngoing(false)
-				.setOnlyAlertOnce(true)
-				.setGroup("GROUP")
-				.setGroupSummary(false);
-		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getActivity());
-		notificationManager.notify(12345, wearableNotificationBuilder.build());
-	}
-
 
 	private void vibrate(int milliseconds) {
 		Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
@@ -150,7 +130,7 @@ public class TimerFragment extends Fragment implements ServiceConnection {
 	private void notifyTimeOut() {
 		Intent intent = new Intent(this.getActivity(), ConfirmationActivity.class);
 		intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.SUCCESS_ANIMATION);
-		intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, "Time Out!");
+		intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.time_out));
 		startActivity(intent);
 	}
 

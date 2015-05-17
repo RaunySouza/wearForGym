@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Wear For Gym</string>
+    <string name="app_name" translatable="false">Wear For Gym</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="timer_remaining">Tempo Restante</string>
+    <string name="time_out">Tempo Esgotado!</string>
 </resources>
