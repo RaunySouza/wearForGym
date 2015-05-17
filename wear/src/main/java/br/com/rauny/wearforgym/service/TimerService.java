@@ -48,6 +48,13 @@ public class TimerService extends Service {
 		}.start();
 	}
 
+	public void stop() {
+		if (mCountDownTimer != null) {
+			mCountDownTimer.onFinish();
+			mCountDownTimer.cancel();
+		}
+	}
+
 	public long getCurrentTime() {
 		return mCurrentTime;
 	}

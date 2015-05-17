@@ -1,6 +1,5 @@
 package br.com.rauny.wearforgym.fragment;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.PendingIntent;
@@ -16,13 +15,11 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.wearable.activity.ConfirmationActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import br.com.rauny.wearforgym.MainActivity;
 import br.com.rauny.wearforgym.R;
@@ -129,12 +126,19 @@ public class TimerFragment extends Fragment implements ServiceConnection {
 		Intent intent = new Intent(getActivity(), MainActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent, 0);
 
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity())
-				.setContentText("Rauny")
-				.setContentTitle("Teste")
-				.setContentIntent(pendingIntent);
+		NotificationCompat.WearableExtender wearableExtender =
+				new NotificationCompat.WearableExtender();
+
+		NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(getActivity())
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentTitle("Title wearable")
+				.setContentText("Text wearable")
+				.setOngoing(false)
+				.setOnlyAlertOnce(true)
+				.setGroup("GROUP")
+				.setGroupSummary(false);
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getActivity());
-		notificationManager.notify(12345, builder.build());
+		notificationManager.notify(12345, wearableNotificationBuilder.build());
 	}
 
 
@@ -169,6 +173,7 @@ public class TimerFragment extends Fragment implements ServiceConnection {
 		if (timeInService > 0) {
 			mCountDownTimer.startFrom(timeInService);
 		}
+		mTimerService.stop();
 	}
 
 	@Override
