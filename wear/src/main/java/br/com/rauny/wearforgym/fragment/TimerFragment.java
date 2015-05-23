@@ -166,7 +166,7 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 
 	private void start() {
 		mTimerService.start(mTime);
-		ContextUtil.vibrate(getActivity(), 10);
+		ContextUtil.vibrate(getActivity(), 50);
 		mStarted = true;
 	}
 

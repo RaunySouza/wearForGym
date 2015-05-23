@@ -119,7 +119,7 @@ public class TimerService extends Service {
 					cancelNotification();
 					notificationManager.notify(NOTIFICATION_ID, createTimeOutNotification());
 				}
-				ContextUtil.vibrate(TimerService.this, 200);
+				ContextUtil.vibrate(TimerService.this, new long[]{0, 200, 500, 200}, -1);
 				mCountDownTimerRunning = false;
 			}
 		};
