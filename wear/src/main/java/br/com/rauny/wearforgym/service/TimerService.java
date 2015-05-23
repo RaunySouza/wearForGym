@@ -14,6 +14,7 @@ import android.util.Log;
 
 import br.com.rauny.wearforgym.MainActivity;
 import br.com.rauny.wearforgym.R;
+import br.com.rauny.wearforgym.Util.ContextUtil;
 import br.com.rauny.wearforgym.constant.Extras;
 
 /**
@@ -49,18 +50,27 @@ public class TimerService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.i(TAG, "Binding Service");
-		cancelNotification();
+
 		return mBinder;
 	}
 
 	@Override
 	public boolean onUnbind(Intent intent) {
 		Log.i(TAG, "Unbinding Service");
+		return super.onUnbind(intent);
+	}
+
+	public void runInBackground() {
 		if (mCountDownTimerRunning) {
 			notificationManager.notify(NOTIFICATION_ID, createRunningTimeNotification());
 			mNotified = true;
 		}
-		return super.onUnbind(intent);
+	}
+
+	public void runInForeground() {
+		if (mNotified) {
+			cancelNotification();
+		}
 	}
 
 	public void start(long time) {
@@ -109,7 +119,7 @@ public class TimerService extends Service {
 					cancelNotification();
 					notificationManager.notify(NOTIFICATION_ID, createTimeOutNotification());
 				}
-
+				ContextUtil.vibrate(TimerService.this, 200);
 				mCountDownTimerRunning = false;
 			}
 		};
