@@ -32,6 +32,7 @@ public class TimeListFragment extends Fragment {
 		ITEMS.add(new Time(30000, "30", Time.Unit.SECONDS));
 		ITEMS.add(new Time(40000, "40", Time.Unit.SECONDS));
 		ITEMS.add(new Time(50000, "50", Time.Unit.SECONDS));
+		ITEMS.add(new Time(60000, "1", Time.Unit.MINUTES));
 	}
 
 	public static TimeListFragment newInstance() {

@@ -1,18 +1,17 @@
 package br.com.rauny.wearforgym;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
 import android.view.WindowManager;
 
 import br.com.rauny.wearforgym.adapter.GridPagerAdapter;
+import br.com.rauny.wearforgym.core.model.Time;
 import br.com.rauny.wearforgym.fragment.TimeListFragment;
 import br.com.rauny.wearforgym.fragment.TimerFragment;
-import br.com.rauny.wearforgym.core.model.Time;
 
-public class MainActivity extends Activity implements TimeListFragment.OnFragmentInteractionListener, TimerFragment.OnFragmentInteractionListener {
+public class MainActivity extends Activity implements TimeListFragment.OnFragmentInteractionListener {
 
 	private GridPagerAdapter mAdapter;
 	private GridViewPager mGridViewPager;
@@ -33,16 +32,10 @@ public class MainActivity extends Activity implements TimeListFragment.OnFragmen
 		});
 	}
 
-
 	@Override
 	public void onFragmentInteraction(Time time) {
 		TimerFragment timerFragment = (TimerFragment) mAdapter.getFragment(0, 0);
 		timerFragment.updateTimerTime(time.getTime());
 		mGridViewPager.scrollTo(0, 0);
-	}
-
-	@Override
-	public void onFragmentInteraction(Uri uri) {
-
 	}
 }

@@ -10,12 +10,12 @@
         android:layout_height="22dp"
         android:layout_margin="16dp"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/roundedbutton"/>
+        android:src="@drawable/rounded_shape"/>
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical|left"
-        android:textColor="@color/backgroundColor"/>
+        android:textColor="@color/secondaryColor"/>
 
 </br.com.rauny.wearforgym.wearableListView.TimeListItemLayout>

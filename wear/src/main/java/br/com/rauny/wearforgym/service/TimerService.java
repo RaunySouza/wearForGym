@@ -1,5 +1,7 @@
 package br.com.rauny.wearforgym.service;
 
+import android.app.IntentService;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -12,20 +14,31 @@ import android.util.Log;
 
 import br.com.rauny.wearforgym.MainActivity;
 import br.com.rauny.wearforgym.R;
+import br.com.rauny.wearforgym.constant.Extras;
 
 /**
  * @author raunysouza
  */
 public class TimerService extends Service {
 
-	public static final int NOTIFICATION_ID = 001;
-
 	private static final String TAG = TimerService.class.getSimpleName();
 
+	public static final int NOTIFICATION_ID = 001;
+
+	private TimerServiceListener mListener;
+
 	private IBinder mBinder = new TimerBinder();
-	private long mCurrentTime;
-	private CountDownTimer mCountDownTimer;
 	private NotificationManagerCompat notificationManager;
+
+	private CountDownTimer mCountDownTimer;
+	private long mCurrentTime;
+	private boolean mCountDownTimerRunning;
+	private boolean mNotified;
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		return START_STICKY;
+	}
 
 	@Override
 	public void onCreate() {
@@ -35,60 +48,111 @@ public class TimerService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		stop();
+		Log.i(TAG, "Binding Service");
+		cancelNotification();
 		return mBinder;
 	}
 
 	@Override
 	public boolean onUnbind(Intent intent) {
 		Log.i(TAG, "Unbinding Service");
+		if (mCountDownTimerRunning) {
+			notificationManager.notify(NOTIFICATION_ID, createRunningTimeNotification());
+			mNotified = true;
+		}
 		return super.onUnbind(intent);
 	}
 
-	public void startTimer(long initialTime) {
-		Log.i(TAG, "Starting Timer at " + initialTime + "ms");
-		mCountDownTimer = new CountDownTimer(initialTime, 1) {
+	public void start(long time) {
+		if (mCountDownTimerRunning) {
+			stop();
+		}
+
+		createCountDownTimer(time);
+
+		Log.i(TAG, "Stating CountDown Timer");
+		mCountDownTimer.start();
+		if (mListener != null) {
+			mListener.onStartCountDown();
+		}
+		mCountDownTimerRunning = true;
+	}
+
+	public void stop() {
+		Log.i(TAG, "Stopping CountDown Timer");
+		mCountDownTimer.cancel();
+		mCountDownTimer = null;
+		if (mNotified) {
+			cancelNotification();
+		}
+
+		mCountDownTimerRunning = false;
+	}
+
+	private void createCountDownTimer(long time) {
+		mCountDownTimer = new CountDownTimer(time, 1) {
 			@Override
-			public void onTick(long millisUntilFinished) {
-				mCurrentTime = millisUntilFinished;
+			public void onTick(long l) {
+				mCurrentTime = l;
+				if (mListener != null) {
+					mListener.onTick(l);
+				}
 			}
 
 			@Override
 			public void onFinish() {
-				Log.i(TAG, "Timer in service finishes!");
-				mCurrentTime = 0;
+				Log.i(TAG, "Timer finished");
+				if (mListener != null) {
+					mListener.onFinishCountDown();
+				}
+				if (mNotified) {
+					cancelNotification();
+					notificationManager.notify(NOTIFICATION_ID, createTimeOutNotification());
+				}
+
+				mCountDownTimerRunning = false;
 			}
-		}.start();
-		createNotification(initialTime);
+		};
 	}
 
-	public void stop() {
-		if (mCountDownTimer != null) {
-			mCountDownTimer.onFinish();
-			mCountDownTimer.cancel();
-			notificationManager.cancel(NOTIFICATION_ID);
-		}
+	public void setListener(TimerServiceListener listener) {
+		this.mListener = listener;
 	}
 
-	public long getCurrentTime() {
-		return mCurrentTime;
+	private void cancelNotification() {
+		notificationManager.cancel(NOTIFICATION_ID);
+		mNotified = false;
 	}
 
-	private void createNotification(long duration) {
-		Intent intent = new Intent(this, MainActivity.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+	private Notification createRunningTimeNotification() {
+		Intent mainAppIntent = new Intent(this, MainActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mainAppIntent, 0);
 
-		NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(this)
-				.setSmallIcon(R.drawable.app_icon)
-				.setContentTitle(getString(R.string.timer_remaining))
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+		builder.setContentTitle(getString(R.string.app_name))
 				.setContentText(getString(R.string.timer_remaining))
+				.setSmallIcon(R.drawable.app_icon)
 				.setContentIntent(pendingIntent)
-				.setOngoing(true)
 				.setUsesChronometer(true)
-				.setWhen(System.currentTimeMillis() + duration)
-				.setLocalOnly(true);
+				.setWhen(System.currentTimeMillis() + mCurrentTime)
+				.setOngoing(true)
+				.setAutoCancel(true);
 
-		notificationManager.notify(NOTIFICATION_ID, wearableNotificationBuilder.build());
+		return builder.build();
+	}
+
+	private Notification createTimeOutNotification() {
+		Intent mainAppIntent = new Intent(this, MainActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mainAppIntent, 0);
+
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+		builder.setContentTitle(getString(R.string.app_name))
+				.setContentText(getString(R.string.time_out))
+				.setSmallIcon(R.drawable.app_icon)
+				.setContentIntent(pendingIntent)
+				.setAutoCancel(true);
+
+		return builder.build();
 	}
 
 	public class TimerBinder extends Binder {
@@ -96,5 +160,11 @@ public class TimerService extends Service {
 		public TimerService getService() {
 			return TimerService.this;
 		}
+	}
+
+	public interface TimerServiceListener {
+		void onTick(long remaining);
+		void onFinishCountDown();
+		void onStartCountDown();
 	}
 }
