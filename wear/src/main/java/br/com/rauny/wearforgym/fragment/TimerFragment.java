@@ -9,13 +9,10 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.SystemClock;
-import android.os.Vibrator;
 import android.support.wearable.activity.ConfirmationActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -43,9 +40,9 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 	private TimerService mTimerService;
 
 	private CountDownTimerLayout mCountDownTimer;
-	private Chronometer mTrainingTimeChronometer;
+	/*private Chronometer mTrainingTimeChronometer;
 	private ImageButton mStartStopTrainingButton;
-	private ImageButton mRestartTrainingButton;
+	private ImageButton mRestartTrainingButton;*/
 	private DonutProgress mDonutProgress;
 	private ImageButton mPreviousTrainingButton;
 	private ImageButton mNextTrainingButton;
@@ -89,9 +86,9 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 		mTime = mSharedPreferences.getLong(Preferences.SELECTED_TIME, 10000);
 
 		mCountDownTimer = findViewById(R.id.count_down_timer);
-		mTrainingTimeChronometer = findViewById(R.id.training_time_chronometer);
+		/*mTrainingTimeChronometer = findViewById(R.id.training_time_chronometer);
 		mStartStopTrainingButton = findViewById(R.id.start_stop_training_button);
-		mRestartTrainingButton = findViewById(R.id.restart_training_button);
+		mRestartTrainingButton = findViewById(R.id.restart_training_button);*/
 		mDonutProgress = findViewById(R.id.donut_progress);
 		mPreviousTrainingButton = findViewById(R.id.previous_training_button);
 		mNextTrainingButton = findViewById(R.id.next_training_button);
@@ -113,7 +110,7 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 			}
 		});
 
-		mStartStopTrainingButton.setOnClickListener(new View.OnClickListener() {
+		/*mStartStopTrainingButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				if (!mStartStopTrainingButton.isActivated()) {
@@ -136,7 +133,7 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 				mTrainingTimeChronometer.setBase(SystemClock.elapsedRealtime());
 				mRestartTrainingButton.setVisibility(View.GONE);
 			}
-		});
+		});*/
 	}
 
 	@Override
@@ -154,15 +151,6 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 		if (mBound) {
 			getActivity().getApplicationContext().unbindService(this);
 			mBound = false;
-		}
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		if (mStartStopTrainingButton.isActivated()) {
-			outState.putBoolean("chronometer_activated", true);
-			outState.putLong("chronometer_base", mTrainingTimeChronometer.getBase());
 		}
 	}
 
