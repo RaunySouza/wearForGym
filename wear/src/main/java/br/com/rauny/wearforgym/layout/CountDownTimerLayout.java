@@ -17,7 +17,6 @@ public class CountDownTimerLayout extends LinearLayout {
 	private TextView mHours;
 	private TextView mMinutes;
 	private TextView mSeconds;
-	private TextView mMilliseconds;
 
 	private long mStartTime;
 
@@ -39,19 +38,20 @@ public class CountDownTimerLayout extends LinearLayout {
 
 	public void setStartTime(long time) {
 		mStartTime = time;
-		mSeconds.setText(TimeUtil.formatSeconds(time));
+		reset();
 	}
 
 	public void reset() {
-		mHours.setText("00");
-		mMinutes.setText("00");
-		mSeconds.setText(TimeUtil.formatSeconds(mStartTime));
-		mMilliseconds.setText("000");
+		String[] formattedTime = TimeUtil.formatTime(mStartTime);
+		mHours.setText(formattedTime[0]);
+		mMinutes.setText(formattedTime[1]);
+		mSeconds.setText(formattedTime[2]);
 	}
 
 	public void update(long currentTime) {
-		mHours.setText(TimeUtil.formatHours(currentTime));
-		mMinutes.setText(TimeUtil.formatMinutes(currentTime));
-		mSeconds.setText(TimeUtil.formatSeconds(currentTime));
+		String[] formattedTime = TimeUtil.formatTime(currentTime);
+		mHours.setText(formattedTime[0]);
+		mMinutes.setText(formattedTime[1]);
+		mSeconds.setText(formattedTime[2]);
 	}
 }

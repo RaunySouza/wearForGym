@@ -57,11 +57,12 @@ public class MainActivity extends BaseActivity {
 
 	private List<Time> getTimeList() {
 		List<Time> times = new ArrayList<>();
-		times.add(new Time(10000, "10", Time.Unit.SECONDS));
-		times.add(new Time(20000, "20", Time.Unit.SECONDS));
-		times.add(new Time(30000, "30", Time.Unit.SECONDS));
-		times.add(new Time(40000, "40", Time.Unit.SECONDS));
-		times.add(new Time(50000, "50", Time.Unit.SECONDS));
+		times.add(new Time(10000, "10 Segundos"));
+		times.add(new Time(20000, "20 Segundos"));
+		times.add(new Time(30000, "30 Segundos"));
+		times.add(new Time(40000, "40 Segundos"));
+		times.add(new Time(50000, "50 Segundos"));
+		times.add(new Time(60000, "1 Minuto"));
 		return times;
 	}
 }

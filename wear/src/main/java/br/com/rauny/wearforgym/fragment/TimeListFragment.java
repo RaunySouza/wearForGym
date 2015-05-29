@@ -27,12 +27,12 @@ public class TimeListFragment extends Fragment {
 	private WearableListView listView;
 
 	static {
-		ITEMS.add(new Time(10000, "10", Time.Unit.SECONDS));
-		ITEMS.add(new Time(20000, "20", Time.Unit.SECONDS));
-		ITEMS.add(new Time(30000, "30", Time.Unit.SECONDS));
-		ITEMS.add(new Time(40000, "40", Time.Unit.SECONDS));
-		ITEMS.add(new Time(50000, "50", Time.Unit.SECONDS));
-		ITEMS.add(new Time(60000, "1", Time.Unit.MINUTES));
+		ITEMS.add(new Time(10000, "10 Segundos"));
+		ITEMS.add(new Time(20000, "20 Segundos"));
+		ITEMS.add(new Time(30000, "30 Segundos"));
+		ITEMS.add(new Time(40000, "40 Segundos"));
+		ITEMS.add(new Time(50000, "50 Segundos"));
+		ITEMS.add(new Time(60000, "1 Minuto"));
 	}
 
 	public static TimeListFragment newInstance() {
