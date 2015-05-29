@@ -40,12 +40,7 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 	private TimerService mTimerService;
 
 	private CountDownTimerLayout mCountDownTimer;
-	/*private Chronometer mTrainingTimeChronometer;
-	private ImageButton mStartStopTrainingButton;
-	private ImageButton mRestartTrainingButton;*/
 	private DonutProgress mDonutProgress;
-	private ImageButton mPreviousTrainingButton;
-	private ImageButton mNextTrainingButton;
 	private TextView mCurrentExerciseText;
 	private TextView mCurrentRepetitionsText;
 
@@ -86,12 +81,7 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 		mTime = mSharedPreferences.getLong(Preferences.SELECTED_TIME, 10000);
 
 		mCountDownTimer = findViewById(R.id.count_down_timer);
-		/*mTrainingTimeChronometer = findViewById(R.id.training_time_chronometer);
-		mStartStopTrainingButton = findViewById(R.id.start_stop_training_button);
-		mRestartTrainingButton = findViewById(R.id.restart_training_button);*/
 		mDonutProgress = findViewById(R.id.donut_progress);
-		mPreviousTrainingButton = findViewById(R.id.previous_training_button);
-		mNextTrainingButton = findViewById(R.id.next_training_button);
 		mCurrentExerciseText = findViewById(R.id.current_exercise_text);
 		mCurrentRepetitionsText = findViewById(R.id.current_repetitions_text);
 
@@ -109,31 +99,6 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 				}
 			}
 		});
-
-		/*mStartStopTrainingButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if (!mStartStopTrainingButton.isActivated()) {
-					mStartStopTrainingButton.setActivated(true);
-					mTrainingTimeChronometer.setBase(SystemClock.elapsedRealtime());
-					mTrainingTimeChronometer.start();
-					mRestartTrainingButton.setVisibility(View.GONE);
-				}
-				else {
-					mStartStopTrainingButton.setActivated(false);
-					mTrainingTimeChronometer.stop();
-					mRestartTrainingButton.setVisibility(View.VISIBLE);
-				}
-			}
-		});
-
-		mRestartTrainingButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				mTrainingTimeChronometer.setBase(SystemClock.elapsedRealtime());
-				mRestartTrainingButton.setVisibility(View.GONE);
-			}
-		});*/
 	}
 
 	@Override

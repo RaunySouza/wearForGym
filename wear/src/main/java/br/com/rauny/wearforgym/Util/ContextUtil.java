@@ -13,7 +13,7 @@ public class ContextUtil {
 	 * <br>
 	 *     {0, 100, 400, 100} = Vibrate twice for 100 milliseconds waiting 400 milliseconds between vibrations
 	 * <br>
-	 *     Passing -1 in repeat argument, means no repeat,]. If 0 (zero) or greater than 0 (zero), repeat
+	 *     Passing -1 in repeat argument, means no repeat. If 0 (zero) or greater than 0 (zero), repeat
 	 *     correspondent index.
 	 * @param context
 	 * @param pattern

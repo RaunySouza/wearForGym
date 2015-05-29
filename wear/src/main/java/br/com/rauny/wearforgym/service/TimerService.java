@@ -1,6 +1,5 @@
 package br.com.rauny.wearforgym.service;
 
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -15,7 +14,6 @@ import android.util.Log;
 import br.com.rauny.wearforgym.MainActivity;
 import br.com.rauny.wearforgym.R;
 import br.com.rauny.wearforgym.Util.ContextUtil;
-import br.com.rauny.wearforgym.constant.Extras;
 
 /**
  * @author raunysouza
@@ -45,6 +43,12 @@ public class TimerService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		notificationManager = NotificationManagerCompat.from(this);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		cancelNotification();
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package br.com.rauny.wearforgym;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
 import android.view.WindowManager;
@@ -11,7 +12,7 @@ import br.com.rauny.wearforgym.core.model.Time;
 import br.com.rauny.wearforgym.fragment.TimeListFragment;
 import br.com.rauny.wearforgym.fragment.TimerFragment;
 
-public class MainActivity extends Activity implements TimeListFragment.OnFragmentInteractionListener {
+public class MainActivity extends WearableActivity implements TimeListFragment.OnFragmentInteractionListener {
 
 	private GridPagerAdapter mAdapter;
 	private GridViewPager mGridViewPager;
