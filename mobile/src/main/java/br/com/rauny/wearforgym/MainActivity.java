@@ -96,13 +96,6 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.Connec
 		mGoogleApiClient.disconnect();
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu_main, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
 	private List<Time> getTimeList() {
 		List<Time> times = new ArrayList<>();
 		times.add(new Time(10000, "10 Segundos"));

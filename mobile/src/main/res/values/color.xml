@@ -6,6 +6,6 @@
     <color name="tertiaryColor">#46B19D</color>
     <color name="backgroundColor">#F4EED3</color>
 
-    <color name="white">#FFFFFF</color>
-    <color name="icon_gray">#8A000000</color>
+    <color name="menu_text_black">#DE000000</color>
+    <color name="menu_icon_gray">#8A000000</color>
 </resources>

@@ -1,10 +1,8 @@
 package br.com.rauny.wearforgym;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.design.widget.FloatingActionButton;
 
 import br.com.rauny.wearforgym.annotation.Layout;
 
@@ -14,6 +12,11 @@ public class ExercisesActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.button_new_exercise);
+		floatingActionButton.setOnClickListener(v -> {
+			Intent intent = new Intent(ExercisesActivity.this, NewExercisePlanActivity.class);
+			startActivity(intent);
+		});
 	}
 
 	@Override
@@ -21,25 +24,4 @@ public class ExercisesActivity extends BaseActivity {
 		return R.id.item_menu_exercises;
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_exercises, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings) {
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
 }

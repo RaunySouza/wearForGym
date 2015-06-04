@@ -20,11 +20,15 @@
         </activity>
         <activity
             android:name=".ExercisesActivity"
-            android:label="@string/title_activity_exercises"
-            android:parentActivityName=".MainActivity" >
+            android:label="@string/title_activity_exercises">
+        </activity>
+        <activity
+            android:name=".NewExercisePlanActivity"
+            android:label="@string/title_activity_new_exercise"
+            android:parentActivityName=".ExercisesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="br.com.rauny.wearforgym.MainActivity" />
+                android:value="br.com.rauny.wearforgym.ExercisesActivity" />
         </activity>
         <meta-data android:name="com.google.android.gms.version"
                    android:value="@integer/google_play_services_version" />
