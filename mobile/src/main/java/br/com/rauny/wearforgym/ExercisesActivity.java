@@ -17,6 +17,11 @@ public class ExercisesActivity extends BaseActivity {
 	}
 
 	@Override
+	protected int navigationDrawerItem() {
+		return R.id.item_menu_exercises;
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.menu_exercises, menu);

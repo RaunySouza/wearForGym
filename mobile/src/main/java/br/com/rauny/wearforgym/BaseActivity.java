@@ -1,37 +1,32 @@
 package br.com.rauny.wearforgym;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.View;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.view.MenuItem;
 
 import br.com.rauny.wearforgym.annotation.Layout;
-import br.com.rauny.wearforgym.navigationDrawer.NavigationDrawerListItem;
-import br.com.rauny.wearforgym.navigationDrawer.NavigationDrawerViewAdapter;
 import br.com.rauny.wearforgym.navigationDrawer.ProfileInfo;
-import br.com.rauny.wearforgym.recyclerView.RecyclerItemClickListener;
 
 /**
  * @author raunysouza
  */
-public abstract class BaseActivity extends ActionBarActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
-	private DrawerLayout drawerLayout;
+	private DrawerLayout mDrawerLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView();
 		createNavigationDrawer();
+
 	}
 
 	protected void createNavigationDrawer() {
@@ -39,45 +34,51 @@ public abstract class BaseActivity extends ActionBarActivity {
 		toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 		setSupportActionBar(toolbar);
 
-		drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-		final RecyclerView drawerView = (RecyclerView) findViewById(R.id.navigation_drawer);
-		drawerView.setLayoutManager(new LinearLayoutManager(this));
-		drawerView.setAdapter(new NavigationDrawerViewAdapter(this, getDrawerItems(), getProfileInfo()));
-		drawerView.addOnItemTouchListener(new RecyclerItemClickListener(this,
-						new RecyclerItemClickListener.OnItemClickListener() {
-							@Override
-							public void onItemClick(View view, int position) {
-								switch (position) {
-									case 1: {
-										Intent intent = new Intent(BaseActivity.this, MainActivity.class);
-										startActivity(intent);
-										break;
-									}
-									case 2: {
-										Intent intent = new Intent(BaseActivity.this, ExercisesActivity.class);
-										startActivity(intent);
-										break;
-									}
-								}
-								drawerLayout.closeDrawers();
-							}
-						})
-		);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+		navigationView.setNavigationItemSelectedListener((menuItem) -> {
+			boolean result = false;
+			if (menuItem.getItemId() != navigationDrawerItem()) {
+				switch (menuItem.getItemId()) {
+					case R.id.item_menu_home:
+						Intent homeIntent = new Intent(BaseActivity.this, MainActivity.class);
+						startActivity(homeIntent);
+						break;
+					case R.id.item_menu_exercises:
+						Intent exercisesIntent = new Intent(BaseActivity.this, ExercisesActivity.class);
+						startActivity(exercisesIntent);
+						break;
+				}
 
+				result = true;
+			}
 
-		ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
-				this,  drawerLayout, toolbar,
-				R.string.opening_drawer, R.string.closing_drawer
-		);
-		drawerLayout.setDrawerListener(drawerToggle);
-		drawerToggle.syncState();
+			mDrawerLayout.closeDrawers();
+			return result;
+		});
+
+		configureNavigationView(navigationView);
 	}
 
-	protected List<NavigationDrawerListItem> getDrawerItems() {
-		List<NavigationDrawerListItem> drawerItems = new ArrayList<>();
-		drawerItems.add(new NavigationDrawerListItem(getString(R.string.menu_home), R.drawable.home_icon));
-		drawerItems.add(new NavigationDrawerListItem(getString(R.string.menu_exercises), R.drawable.exercises_icon));
-		return drawerItems;
+	private void configureNavigationView(NavigationView navigationView) {
+		MenuItem activityMenuItem = navigationView.getMenu().findItem(navigationDrawerItem());
+		activityMenuItem.setChecked(true);
+		int[][] states = {
+				new int[] {android.R.attr.state_checked},
+				new int[] {-android.R.attr.state_checked}
+		};
+		int[] textColors = {
+				getResources().getColor(R.color.primaryColor),
+				Color.BLACK
+		};
+		int[] iconColors = {
+				getResources().getColor(R.color.primaryColor),
+				getResources().getColor(R.color.icon_gray)
+		};
+		ColorStateList textColorStateList = new ColorStateList(states, textColors);
+		navigationView.setItemTextColor(textColorStateList);
+		ColorStateList iconColorStateList = new ColorStateList(states, iconColors);
+		navigationView.setItemIconTintList(iconColorStateList);
 	}
 
 	protected ProfileInfo getProfileInfo() {
@@ -94,13 +95,15 @@ public abstract class BaseActivity extends ActionBarActivity {
 	}
 
 	protected DrawerLayout getDrawer() {
-		return drawerLayout;
+		return mDrawerLayout;
 	}
+
+	protected abstract int navigationDrawerItem();
 
 	@Override
 	public void onBackPressed() {
-		if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-			drawerLayout.closeDrawers();
+		if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+			mDrawerLayout.closeDrawers();
 		}
 		else {
 			super.onBackPressed();

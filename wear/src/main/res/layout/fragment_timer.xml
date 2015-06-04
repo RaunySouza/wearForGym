@@ -75,6 +75,16 @@
         android:layout_marginTop="0dp"
         android:clickable="true"/>
 
+    <TextView
+        android:id="@+id/clock_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        android:text="00:00"/>
+
     <!-- Removed, for while. Because to probable complexity of this feature, i will implement later. -->
     <!--<LinearLayout
         android:layout_width="wrap_content"

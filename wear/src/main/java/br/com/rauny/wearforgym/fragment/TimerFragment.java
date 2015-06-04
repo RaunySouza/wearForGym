@@ -2,9 +2,11 @@ package br.com.rauny.wearforgym.fragment;
 
 import android.app.Fragment;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +20,10 @@ import android.widget.TextView;
 
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import br.com.rauny.wearforgym.MainActivity;
 import br.com.rauny.wearforgym.R;
 import br.com.rauny.wearforgym.Util.ContextUtil;
 import br.com.rauny.wearforgym.constant.Preferences;
@@ -36,13 +42,16 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 	private long mTime;
 	private boolean mVisible;
 	private boolean mBound;
+	private final SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("HH:mm");
 
 	private TimerService mTimerService;
+	private BroadcastReceiver mBroadcastReceiver;
 
 	private CountDownTimerLayout mCountDownTimer;
 	private DonutProgress mDonutProgress;
 	private TextView mCurrentExerciseText;
 	private TextView mCurrentRepetitionsText;
+	private TextView mClockText;
 
 	public static TimerFragment newInstance() {
 		TimerFragment fragment = new TimerFragment();
@@ -62,6 +71,7 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 		if (mBound) {
 			mTimerService.runInForeground();
 		}
+		getActivity().registerReceiver(mBroadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
 		mVisible = true;
 	}
 
@@ -71,6 +81,13 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 		Intent serviceIntent = new Intent(getActivity(), TimerService.class);
 		getActivity().getApplicationContext().startService(serviceIntent);
 		getActivity().getApplicationContext().bindService(serviceIntent, this, Service.BIND_AUTO_CREATE);
+
+		mBroadcastReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				mClockText.setText(mSimpleDateFormat.format(new Date()));
+			}
+		};
 	}
 
 	@Override
@@ -84,19 +101,18 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 		mDonutProgress = findViewById(R.id.donut_progress);
 		mCurrentExerciseText = findViewById(R.id.current_exercise_text);
 		mCurrentRepetitionsText = findViewById(R.id.current_repetitions_text);
+		mClockText = findViewById(R.id.clock_text_view);
+		mClockText.setText(mSimpleDateFormat.format(new Date()));
 
 		mCountDownTimer.setStartTime(mTime);
 		mDonutProgress.setMax((int) mTime);
 		mDonutProgress.setProgress((int) mTime);
 
-		mCountDownTimer.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if (!mStarted) {
-					start();
-				} else {
-					stop();
-				}
+		mCountDownTimer.setOnClickListener(viewItem -> {
+			if (!mStarted) {
+				start();
+			} else {
+				stop();
 			}
 		});
 	}
@@ -107,6 +123,7 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 		if (mBound) {
 			mTimerService.runInBackground();
 		}
+		getActivity().unregisterReceiver(mBroadcastReceiver);
 		mVisible = false;
 	}
 
@@ -181,5 +198,9 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 	@Override
 	public void onServiceDisconnected(ComponentName componentName) {
 		mBound = false;
+	}
+
+	private MainActivity getMainActivity() {
+		return (MainActivity) getActivity();
 	}
 }
