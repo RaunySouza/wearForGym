@@ -15,7 +15,6 @@ import android.support.wearable.activity.ConfirmationActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.github.lzyzsd.circleprogress.DonutProgress;
@@ -72,6 +71,7 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 			mTimerService.runInForeground();
 		}
 		getActivity().registerReceiver(mBroadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+		mClockText.setText(mSimpleDateFormat.format(new Date()));
 		mVisible = true;
 	}
 
