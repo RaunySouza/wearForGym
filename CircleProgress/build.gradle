@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 version = "1.2.0"
@@ -25,38 +25,38 @@ android {
 def siteUrl = 'https://github.com/lzyzsd/CircleProgress'
 def gitUrl = 'https://github.com/lzyzsd/CircleProgress.git'
 group = "com.github.lzyzsd.circleprogress"
-install {
-    repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
-        pom {
-            project {
-                packaging 'aar'
-                // Add your description here
-                name 'Circle Progress, Donut Progress, Arc Progress'
-                url siteUrl
-                // Set your license
-                licenses {
-                    license {
-                        name 'MIT'
-                        url 'http://opensource.org/licenses/MIT'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'lzyzsd'
-                        name 'Bruce Lee'
-                        email 'bruceinpeking@gmail.com'
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-                }
-            }
-        }
-    }
-}
+//install {
+//    repositories.mavenInstaller {
+//        // This generates POM.xml with proper parameters
+//        pom {
+//            project {
+//                packaging 'aar'
+//                // Add your description here
+//                name 'Circle Progress, Donut Progress, Arc Progress'
+//                url siteUrl
+//                // Set your license
+//                licenses {
+//                    license {
+//                        name 'MIT'
+//                        url 'http://opensource.org/licenses/MIT'
+//                    }
+//                }
+//                developers {
+//                    developer {
+//                        id 'lzyzsd'
+//                        name 'Bruce Lee'
+//                        email 'bruceinpeking@gmail.com'
+//                    }
+//                }
+//                scm {
+//                    connection gitUrl
+//                    developerConnection gitUrl
+//                    url siteUrl
+//                }
+//            }
+//        }
+//    }
+//}
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'

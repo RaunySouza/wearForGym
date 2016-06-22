@@ -28,8 +28,9 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             android:src="@drawable/icon_plus"
-            android:elevation="10dp"
-            app:backgroundTint="@color/secondaryColor"/>
+            android:elevation="4dp"
+            app:backgroundTint="@color/secondaryColor"
+            app:borderWidth="0dp"/>
     </FrameLayout>
 
     <include layout="@layout/navigation_drawer" />

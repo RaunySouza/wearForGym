@@ -6,53 +6,6 @@
              android:background="@color/primaryColor"
              tools:context="br.com.rauny.wearforgym.fragment.TimerFragment">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:layout_marginTop="35dp">
-
-        <!--<LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageButton
-                android:id="@+id/previous_training_button"
-                android:layout_width="28dp"
-                android:layout_height="26dp"
-                android:layout_marginRight="12dp"
-                android:src="@drawable/previous_training_icon"
-                android:background="@android:color/transparent"/>
-            <ImageButton
-                android:id="@+id/next_training_button"
-                android:layout_width="28dp"
-                android:layout_height="26dp"
-                android:src="@drawable/next_training_icon"
-                android:background="@android:color/transparent"/>
-        </LinearLayout>-->
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
-            <TextView
-                android:id="@+id/current_exercise_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="Supino Reto"/>
-            <TextView
-                android:id="@+id/current_repetitions_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="10sp"
-                android:text="12/10/8"/>
-        </LinearLayout>
-
-    </LinearLayout>
-
     <com.github.lzyzsd.circleprogress.DonutProgress
         android:id="@+id/donut_progress"
         android:layout_width="match_parent"
@@ -84,46 +37,5 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="40dp"
         android:text="00:00"/>
-
-    <!-- Removed, for while. Because to probable complexity of this feature, i will implement later. -->
-    <!--<LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_below="@id/count_down_timer"
-        android:layout_marginTop="6dp"
-        android:layout_centerHorizontal="true">
-
-        <Chronometer
-            android:id="@+id/training_time_chronometer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/chronometer_text_size"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
-            <ImageButton
-                android:id="@+id/start_stop_training_button"
-                android:layout_width="20dp"
-                android:layout_height="18dp"
-                android:src="@drawable/start_stop_training_selector"
-                android:background="@android:color/transparent"/>
-
-            <ImageButton
-                android:id="@+id/restart_training_button"
-                android:layout_width="24dp"
-                android:layout_height="22dp"
-                android:layout_marginLeft="7dp"
-                android:src="@drawable/restart_training_icon"
-                android:visibility="gone"
-                android:background="@android:color/transparent"/>
-        </LinearLayout>
-
-    </LinearLayout>-->
 
 </RelativeLayout>

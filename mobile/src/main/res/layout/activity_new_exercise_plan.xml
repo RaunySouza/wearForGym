@@ -45,6 +45,16 @@
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
+        
+        <ImageButton
+            android:id="@+id/button_save"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="right|bottom"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/save_button_before_animation"
+            android:transitionName="a"/>
     </FrameLayout>
 
     <include layout="@layout/navigation_drawer" />

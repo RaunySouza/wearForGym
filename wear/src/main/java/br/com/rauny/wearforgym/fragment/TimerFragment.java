@@ -22,19 +22,18 @@ import com.github.lzyzsd.circleprogress.DonutProgress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import br.com.rauny.wearforgym.MainActivity;
 import br.com.rauny.wearforgym.R;
 import br.com.rauny.wearforgym.Util.ContextUtil;
 import br.com.rauny.wearforgym.constant.Preferences;
 import br.com.rauny.wearforgym.layout.CountDownTimerLayout;
 import br.com.rauny.wearforgym.service.TimerService;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * @author raunysouza
  */
 public class TimerFragment extends Fragment implements ServiceConnection, TimerService.TimerServiceListener {
-
-	private static final String TAG = TimerFragment.class.getSimpleName();
 
 	private SharedPreferences mSharedPreferences;
 	private boolean mStarted;
@@ -46,11 +45,14 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 	private TimerService mTimerService;
 	private BroadcastReceiver mBroadcastReceiver;
 
-	private CountDownTimerLayout mCountDownTimer;
-	private DonutProgress mDonutProgress;
-	private TextView mCurrentExerciseText;
-	private TextView mCurrentRepetitionsText;
-	private TextView mClockText;
+	@BindView(R.id.count_down_timer)
+	CountDownTimerLayout mCountDownTimer;
+
+	@BindView(R.id.donut_progress)
+	DonutProgress mDonutProgress;
+
+	@BindView(R.id.clock_text_view)
+	TextView mClockText;
 
 	public static TimerFragment newInstance() {
 		TimerFragment fragment = new TimerFragment();
@@ -61,7 +63,27 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_timer, container, false);
+		View view = inflater.inflate(R.layout.fragment_timer, container, false);
+		ButterKnife.bind(this, view);
+
+		mSharedPreferences = getActivity().getSharedPreferences(Preferences.TIMER_PREFERENCE_NAME, Context.MODE_PRIVATE);
+		mTime = mSharedPreferences.getLong(Preferences.SELECTED_TIME, 10000);
+
+		mClockText.setText(mSimpleDateFormat.format(new Date()));
+
+		mCountDownTimer.setStartTime(mTime);
+		mDonutProgress.setMax((int) mTime);
+		mDonutProgress.setProgress((int) mTime);
+
+		mCountDownTimer.setOnClickListener(viewItem -> {
+			if (!mStarted) {
+				start();
+			} else {
+				stop();
+			}
+		});
+
+		return view;
 	}
 
 	@Override
@@ -88,33 +110,6 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 				mClockText.setText(mSimpleDateFormat.format(new Date()));
 			}
 		};
-	}
-
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-
-		mSharedPreferences = getActivity().getSharedPreferences(Preferences.TIMER_PREFERENCE_NAME, Context.MODE_PRIVATE);
-		mTime = mSharedPreferences.getLong(Preferences.SELECTED_TIME, 10000);
-
-		mCountDownTimer = findViewById(R.id.count_down_timer);
-		mDonutProgress = findViewById(R.id.donut_progress);
-		mCurrentExerciseText = findViewById(R.id.current_exercise_text);
-		mCurrentRepetitionsText = findViewById(R.id.current_repetitions_text);
-		mClockText = findViewById(R.id.clock_text_view);
-		mClockText.setText(mSimpleDateFormat.format(new Date()));
-
-		mCountDownTimer.setStartTime(mTime);
-		mDonutProgress.setMax((int) mTime);
-		mDonutProgress.setProgress((int) mTime);
-
-		mCountDownTimer.setOnClickListener(viewItem -> {
-			if (!mStarted) {
-				start();
-			} else {
-				stop();
-			}
-		});
 	}
 
 	@Override
@@ -159,10 +154,6 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 		mStarted = false;
 	}
 
-	private <T extends View> T findViewById(int id) {
-		return (T) getActivity().findViewById(id);
-	}
-
 	@Override
 	public void onTick(long remaining) {
 		if (mVisible) {
@@ -198,9 +189,6 @@ public class TimerFragment extends Fragment implements ServiceConnection, TimerS
 	@Override
 	public void onServiceDisconnected(ComponentName componentName) {
 		mBound = false;
-	}
-
-	private MainActivity getMainActivity() {
-		return (MainActivity) getActivity();
+		mTimerService.setListener(null);
 	}
 }

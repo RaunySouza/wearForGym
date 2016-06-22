@@ -5,8 +5,11 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,6 +26,7 @@ public class NewExercisePlanActivity extends BaseActivity {
 	private SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	private EditText mEditTextExpirationDate;
+	private ImageButton mImageButtonSave;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,11 @@ public class NewExercisePlanActivity extends BaseActivity {
 		mEditTextExpirationDate.setOnClickListener(v -> {
 			openDatePickerDialog(v);
 		});
+
+		mImageButtonSave = findView(R.id.button_save);
+		Animation animation = AnimationUtils.loadAnimation(this, R.anim.save_button_opening_animation);
+		mImageButtonSave.setAnimation(animation);
+		mImageButtonSave.animate();
 	}
 
 	public void openDatePickerDialog(View v) {

@@ -4,8 +4,8 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 
-import br.com.rauny.wearforgym.fragment.TimerFragment;
 import br.com.rauny.wearforgym.fragment.TimeListFragment;
+import br.com.rauny.wearforgym.fragment.TimerFragment;
 
 /**
  * @author raunysouza
@@ -32,7 +32,7 @@ public class GridPagerAdapter extends FragmentGridPagerAdapter {
 	}
 
 	@Override
-	public int getColumnCount(int i) {
+	public int getColumnCount(int row) {
 		return FRAGMENTS.length;
 	}
 }
