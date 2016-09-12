@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import br.com.rauny.wearforgym.R;
 import br.com.rauny.wearforgym.core.model.Time;
@@ -21,18 +22,13 @@ import br.com.rauny.wearforgym.wearableListView.TimeListAdapter;
  */
 public class TimeListFragment extends Fragment {
 
-	private static final List<Time> ITEMS = new ArrayList<>();
+	private List<Time> mItems = new ArrayList<>();
 
 	private OnFragmentInteractionListener mListener;
 	private WearableListView listView;
 
 	static {
-		ITEMS.add(new Time(10000, "10 Segundos"));
-		ITEMS.add(new Time(20000, "20 Segundos"));
-		ITEMS.add(new Time(30000, "30 Segundos"));
-		ITEMS.add(new Time(40000, "40 Segundos"));
-		ITEMS.add(new Time(50000, "50 Segundos"));
-		ITEMS.add(new Time(60000, "1 Minuto"));
+
 	}
 
 	public static TimeListFragment newInstance() {
@@ -42,11 +38,20 @@ public class TimeListFragment extends Fragment {
 		return fragment;
 	}
 
-	public TimeListFragment() {}
+	public TimeListFragment() {
+
+    }
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        mItems.add(new Time(getActivity(), 10, TimeUnit.SECONDS));
+        mItems.add(new Time(getActivity(), 20, TimeUnit.SECONDS));
+        mItems.add(new Time(getActivity(), 30, TimeUnit.SECONDS));
+        mItems.add(new Time(getActivity(), 40, TimeUnit.SECONDS));
+        mItems.add(new Time(getActivity(), 50, TimeUnit.SECONDS));
+        mItems.add(new Time(getActivity(), 1, TimeUnit.MINUTES));
 	}
 
 	@Nullable
@@ -59,7 +64,7 @@ public class TimeListFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		listView = (WearableListView) getActivity().findViewById(R.id.times_list_view);
-		listView.setAdapter(new TimeListAdapter(getActivity().getApplicationContext(), ITEMS));
+		listView.setAdapter(new TimeListAdapter(getActivity().getApplicationContext(), mItems));
 		listView.setGreedyTouchMode(true);
 		listView.setClickListener(new WearableListView.ClickListener() {
 

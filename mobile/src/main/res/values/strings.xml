@@ -1,22 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Wear For Gym</string>
-    <string name="hello_world">Hello world!</string>
-
-    <string name="menu_home">Home</string>
-    <string name="menu_exercises">Treinos</string>
-
-    <string name="opening_drawer">openingDrawer</string>
-    <string name="closing_drawer">closingDrawer</string>
-    <string name="title_activity_exercises">Exercícios</string>
-    <string name="title_activity_new_exercise">Novo Exercício</string>
-
-    <string name="label_exercise_name">Exercício</string>
-    <string name="label_repetitions">Repetições</string>
-
-    <string name="label_plan_name">Nome</string>
-    <string name="label_expiration_date">Validade</string>
-
-    <string name="button_save">Salvar</string>
+    <string name="add_time">Add Time</string>
+    <string name="type_time">Type Time</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 </resources>

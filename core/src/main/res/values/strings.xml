@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">core</string>
+    <string name="seconds">Second(s)</string>
+    <string name="minutes">Minute(s)</string>
 </resources>

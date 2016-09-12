@@ -1,4 +1,4 @@
-package br.com.rauny.wearforgym.recyclerView;
+package br.com.rauny.wearforgym.ui.recyclerView;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -22,6 +22,10 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 	private Drawable mDivider;
 
 	private int mOrientation;
+
+	public DividerItemDecoration(Context context) {
+		this(context, LinearLayoutManager.VERTICAL);
+	}
 
 	public DividerItemDecoration(Context context, int orientation) {
 		final TypedArray a = context.obtainStyledAttributes(ATTRS);
