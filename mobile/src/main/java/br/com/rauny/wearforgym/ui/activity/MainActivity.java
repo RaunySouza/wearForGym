@@ -2,9 +2,10 @@ package br.com.rauny.wearforgym.ui.activity;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
         AddCustomTimeFragment addCustomTimeFragment = new AddCustomTimeFragment();
         addCustomTimeFragment.setOnSaveListener(time -> {
             mTimes.add(time);
-            mTimesRecyclerView.getAdapter().notifyItemInserted(mTimes.size() - 1);
+            int position = mTimes.size() - 1;
+            mTimesRecyclerView.getAdapter().notifyItemInserted(position);
+            mTimesRecyclerView.scrollToPosition(position);
         });
         addCustomTimeFragment.show(getFragmentManager(), "AddCustomTime");
     }
@@ -105,11 +108,16 @@ public class MainActivity extends AppCompatActivity {
     public class TimeListItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
         private Drawable mBackground;
+        private Drawable mIcon;
+        private int mIconMargin;
         private boolean initialized;
 
         private void init() {
             if (!initialized) {
-                mBackground = new ColorDrawable(Color.RED);
+                mBackground = getDrawable(R.color.delete_color);
+                mIcon = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_delete_white_24dp);
+                mIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+                mIconMargin = (int) getResources().getDimension(R.dimen.remove_icon_margin);
                 initialized = true;
             }
         }
@@ -122,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            return makeMovementFlags(0, ItemTouchHelper.START | ItemTouchHelper.END);
+            return makeMovementFlags(0, ItemTouchHelper.START);
         }
 
         @Override
@@ -135,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             int position = viewHolder.getAdapterPosition();
             Time removed = mTimes.remove(position);
             if (removed != null) {
-//                removed.delete();
+                removed.delete();
             }
             mTimesRecyclerView.getAdapter().notifyItemRemoved(position);
         }
@@ -149,19 +157,21 @@ public class MainActivity extends AppCompatActivity {
             init();
             View itemView = viewHolder.itemView;
 
-            int left;
-            int right;
-            if (dX > 0) {
-                left = itemView.getLeft();
-                right = itemView.getLeft() + (int) dX;
-            } else {
-                left = itemView.getRight() + (int) dX;
-                right = itemView.getRight();
-            }
-
-            mBackground.setBounds(left, itemView.getTop(), right, itemView.getBottom());
+            mBackground.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
             mBackground.draw(c);
 
+            if (isCurrentlyActive) {
+                int itemHeight = itemView.getBottom() - itemView.getTop();
+                int intrinsicWidth = mIcon.getIntrinsicWidth();
+                int intrinsicHeight = mIcon.getIntrinsicWidth();
+
+                int iconLeft = itemView.getRight() - mIconMargin - intrinsicWidth;
+                int iconRight = itemView.getRight() - mIconMargin;
+                int iconTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
+                int iconBottom = iconTop + intrinsicHeight;
+                mIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+                mIcon.draw(c);
+            }
 
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
@@ -174,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
         private void init() {
             if (!initiated) {
-                background = new ColorDrawable(Color.RED);
+                background = getDrawable(R.color.delete_color);
                 initiated = true;
             }
         }
