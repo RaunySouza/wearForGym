@@ -1,8 +1,7 @@
 package br.com.rauny.wearforgym.ui.activity;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -11,16 +10,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction;
 
 import java.util.List;
 
 import br.com.rauny.wearforgym.R;
+import br.com.rauny.wearforgym.core.config.AppDatabase;
 import br.com.rauny.wearforgym.core.model.Time;
 import br.com.rauny.wearforgym.ui.fragment.AddCustomTimeFragment;
 import br.com.rauny.wearforgym.ui.recyclerView.DividerItemDecoration;
@@ -93,9 +98,31 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(TimeListViewHolder holder, int position) {
             Time time = mTimes.get(position);
-            holder.mTimeTextView.setText(time.format(MainActivity.this));
+
+            CharSequence text = time.format(MainActivity.this);
+            if (time.isSelected()) {
+                SpannableString spanned = new SpannableString(text);
+                spanned.setSpan(new StyleSpan(Typeface.BOLD), 0, spanned.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                text = spanned;
+            }
+
+            holder.mTimeTextView.setText(text);
+
             holder.itemView.setOnClickListener(v -> {
-                //Add event handler
+                //Set to false previous selected interval and set to true the selected one
+                for (Time mTime : mTimes) {
+                    if (time.equals(mTime))
+                        mTime.setSelected(true);
+                    else if (mTime.isSelected())
+                        mTime.setSelected(false);
+                }
+                FastStoreModelTransaction.updateBuilder(FlowManager.getModelAdapter(Time.class))
+                        .addAll(mTimes)
+                        .build()
+                        .execute(FlowManager.getWritableDatabase(AppDatabase.class));
+                notifyDataSetChanged();
+
+                //Send to wearable new value
             });
         }
 
@@ -116,12 +143,10 @@ public class MainActivity extends AppCompatActivity {
             if (!initialized) {
                 mBackground = getDrawable(R.color.delete_color);
                 mIcon = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_delete_white_24dp);
-                mIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                 mIconMargin = (int) getResources().getDimension(R.dimen.remove_icon_margin);
                 initialized = true;
             }
         }
-
 
         @Override
         public boolean isLongPressDragEnabled() {
@@ -130,7 +155,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            return makeMovementFlags(0, ItemTouchHelper.START);
+            Time time = mTimes.get(viewHolder.getAdapterPosition());
+            int movement = time.isSelected() ? 0 : ItemTouchHelper.START;
+            return makeMovementFlags(0, movement);
         }
 
         @Override
@@ -151,11 +178,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             if (viewHolder.getAdapterPosition() == -1) {
+                viewHolder.itemView.setElevation(0);
                 return;
             }
 
             init();
             View itemView = viewHolder.itemView;
+            itemView.setElevation(5);
 
             mBackground.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
             mBackground.draw(c);

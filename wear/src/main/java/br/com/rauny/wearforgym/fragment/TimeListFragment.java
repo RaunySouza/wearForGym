@@ -46,12 +46,12 @@ public class TimeListFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-        mItems.add(new Time(getActivity(), 10, TimeUnit.SECONDS));
-        mItems.add(new Time(getActivity(), 20, TimeUnit.SECONDS));
-        mItems.add(new Time(getActivity(), 30, TimeUnit.SECONDS));
-        mItems.add(new Time(getActivity(), 40, TimeUnit.SECONDS));
-        mItems.add(new Time(getActivity(), 50, TimeUnit.SECONDS));
-        mItems.add(new Time(getActivity(), 1, TimeUnit.MINUTES));
+        mItems.add(new Time(10, TimeUnit.SECONDS));
+        mItems.add(new Time(20, TimeUnit.SECONDS));
+        mItems.add(new Time(30, TimeUnit.SECONDS));
+        mItems.add(new Time(40, TimeUnit.SECONDS));
+        mItems.add(new Time(50, TimeUnit.SECONDS));
+        mItems.add(new Time(1, TimeUnit.MINUTES));
 	}
 
 	@Nullable

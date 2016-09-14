@@ -27,6 +27,9 @@ public class Time extends BaseModel {
     @Column
 	private TimeUnit timeUnit;
 
+    @Column
+    private boolean selected;
+
 	public Time() {}
 
 	public Time(long time, TimeUnit timeUnit) {
@@ -57,6 +60,14 @@ public class Time extends BaseModel {
 
     public void setTimeUnit(TimeUnit timeUnit) {
         this.timeUnit = timeUnit;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public long getMillis() {

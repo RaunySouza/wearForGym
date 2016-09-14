@@ -32,6 +32,7 @@ public class AppDatabase {
             Time timeThirtySeconds = new Time();
             timeThirtySeconds.setTime(30);
             timeThirtySeconds.setTimeUnit(TimeUnit.SECONDS);
+            timeThirtySeconds.setSelected(true);
             timeThirtySeconds.save(database);
 
             Time timeFortySeconds = new Time();
