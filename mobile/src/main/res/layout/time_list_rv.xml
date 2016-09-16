@@ -7,8 +7,9 @@
     android:paddingBottom="@dimen/time_list_top_bottom_padding"
     android:paddingTop="@dimen/time_list_top_bottom_padding"
     android:orientation="horizontal"
-    android:background="?selectableItemBackground"
-    android:gravity="center_vertical">
+    android:background="@android:color/white"
+    android:gravity="center_vertical"
+    android:elevation="1dp">
 
     <ImageView
         android:layout_width="wrap_content"

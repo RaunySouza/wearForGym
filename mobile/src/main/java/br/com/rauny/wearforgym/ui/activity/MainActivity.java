@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         loadTimeList();
 
         mTimesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mTimesRecyclerView.addItemDecoration(new DividerItemDecoration(this));
+        mTimesRecyclerView.addItemDecoration(new DividerItemDecoration(this, R.drawable.divider));
         mTimesRecyclerView.addItemDecoration(new DismissItemDecoration());
         mTimesRecyclerView.setAdapter(new TimeListAdapter());
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new TimeListItemTouchHelperCallback());
@@ -177,19 +177,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            View itemView = viewHolder.itemView;
             if (viewHolder.getAdapterPosition() == -1) {
-                viewHolder.itemView.setElevation(0);
                 return;
             }
 
-            init();
-            View itemView = viewHolder.itemView;
-            itemView.setElevation(5);
-
-            mBackground.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-            mBackground.draw(c);
-
             if (isCurrentlyActive) {
+                init();
+                mBackground.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                mBackground.draw(c);
+
                 int itemHeight = itemView.getBottom() - itemView.getTop();
                 int intrinsicWidth = mIcon.getIntrinsicWidth();
                 int intrinsicHeight = mIcon.getIntrinsicWidth();
