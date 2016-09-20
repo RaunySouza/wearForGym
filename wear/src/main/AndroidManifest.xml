@@ -24,11 +24,7 @@
         </activity>
         <service android:name=".service.TimerService"
                  android:exported="false"/>
-        <service android:name=".service.WearableService">
-            <intent-filter>
-                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
-            </intent-filter>
-        </service>
+
     </application>
 
 </manifest>

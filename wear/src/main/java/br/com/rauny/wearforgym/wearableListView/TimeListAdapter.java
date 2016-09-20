@@ -45,8 +45,7 @@ public class TimeListAdapter extends WearableListView.Adapter {
 	}
 
 
-
-	public static class TimeListViewHolder extends WearableListView.ViewHolder {
+	public class TimeListViewHolder extends WearableListView.ViewHolder {
 
 		private TextView name;
 		private Time time;
@@ -58,7 +57,7 @@ public class TimeListAdapter extends WearableListView.Adapter {
 
 		public void setTime(Time time) {
 			this.time = time;
-			name.setText(time.toString());
+			name.setText(time.format(mContext));
 		}
 
 		public Time getTime() {

@@ -1,6 +1,9 @@
 package br.com.rauny.wearforgym.wearableListView;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.support.wearable.view.WearableListView;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,9 +14,7 @@ import br.com.rauny.wearforgym.R;
 /**
  * @author raunysouza
  */
-public class TimeListItemLayout extends LinearLayout
-//		implements WearableListView.OnCenterProximityListener
-{
+public class TimeListItemLayout extends LinearLayout implements WearableListView.Item {
 
 	private ImageView mCircle;
 	private TextView mName;
@@ -36,6 +37,40 @@ public class TimeListItemLayout extends LinearLayout
 		mCircle = (ImageView) findViewById(R.id.icon);
 		mName = (TextView) findViewById(R.id.name);
 	}
+
+    @Override
+    public float getProximityMinValue() {
+        return 1.0f;
+    }
+
+    @Override
+    public float getProximityMaxValue() {
+        return 1.2f;
+    }
+
+    @Override
+    public float getCurrentProximityValue() {
+        return 1.0f;
+    }
+
+    @Override
+    public void setScalingAnimatorValue(float v) {
+
+    }
+
+    @Override
+    public void onScaleUpStart() {
+		GradientDrawable drawable = (GradientDrawable) mCircle.getDrawable();
+		drawable.setColor(Color.parseColor("#253141"));
+		drawable.setAlpha(255);
+    }
+
+    @Override
+    public void onScaleDownStart() {
+		GradientDrawable drawable = (GradientDrawable) mCircle.getDrawable();
+		drawable.setColor(Color.parseColor("#F4EED3"));
+		drawable.setAlpha(50);
+    }
 
 //	@Override
 //	public void onCenterPosition(boolean animate) {

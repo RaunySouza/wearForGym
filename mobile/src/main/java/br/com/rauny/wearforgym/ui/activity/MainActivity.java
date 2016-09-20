@@ -182,22 +182,21 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            if (isCurrentlyActive) {
-                init();
-                mBackground.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-                mBackground.draw(c);
 
-                int itemHeight = itemView.getBottom() - itemView.getTop();
-                int intrinsicWidth = mIcon.getIntrinsicWidth();
-                int intrinsicHeight = mIcon.getIntrinsicWidth();
+            init();
+            mBackground.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+            mBackground.draw(c);
 
-                int iconLeft = itemView.getRight() - mIconMargin - intrinsicWidth;
-                int iconRight = itemView.getRight() - mIconMargin;
-                int iconTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
-                int iconBottom = iconTop + intrinsicHeight;
-                mIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
-                mIcon.draw(c);
-            }
+            int itemHeight = itemView.getBottom() - itemView.getTop();
+            int intrinsicWidth = mIcon.getIntrinsicWidth();
+            int intrinsicHeight = mIcon.getIntrinsicWidth();
+
+            int iconLeft = itemView.getRight() - mIconMargin - intrinsicWidth;
+            int iconRight = itemView.getRight() - mIconMargin;
+            int iconTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
+            int iconBottom = iconTop + intrinsicHeight;
+            mIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+            mIcon.draw(c);
 
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }

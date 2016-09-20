@@ -22,7 +22,7 @@ public class TimerService extends Service {
 
 	private static final String TAG = TimerService.class.getSimpleName();
 
-	public static final int NOTIFICATION_ID = 001;
+	public static final int NOTIFICATION_ID = 1;
 
 	private TimerServiceListener mListener;
 
