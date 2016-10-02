@@ -1,4 +1,4 @@
-package br.com.rauny.wearforgym.core.model;
+package br.com.rauny.wearforgym.model;
 
 import android.content.Context;
 
@@ -9,8 +9,8 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.concurrent.TimeUnit;
 
+import br.com.rauny.wearforgym.config.AppDatabase;
 import br.com.rauny.wearforgym.core.R;
-import br.com.rauny.wearforgym.core.config.AppDatabase;
 
 /**
  * @author raunysouza

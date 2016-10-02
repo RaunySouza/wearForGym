@@ -1,4 +1,4 @@
-package br.com.rauny.wearforgym.core.config;
+package br.com.rauny.wearforgym.config;
 
 import com.raizlabs.android.dbflow.annotation.Database;
 import com.raizlabs.android.dbflow.annotation.Migration;
@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.util.concurrent.TimeUnit;
 
-import br.com.rauny.wearforgym.core.model.Time;
+import br.com.rauny.wearforgym.model.Time;
 
 /**
  * @author raunysouza

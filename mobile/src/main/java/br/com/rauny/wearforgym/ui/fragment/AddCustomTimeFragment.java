@@ -16,7 +16,7 @@ import android.widget.Spinner;
 import java.util.concurrent.TimeUnit;
 
 import br.com.rauny.wearforgym.R;
-import br.com.rauny.wearforgym.core.model.Time;
+import br.com.rauny.wearforgym.model.Time;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -88,7 +88,6 @@ public class AddCustomTimeFragment extends DialogFragment {
         if (mListener != null && mTimeSaved != null)
             mListener.onSave(mTimeSaved);
     }
-
 
     @OnTextChanged(R.id.time)
     public void onTextChanged(Editable editable) {

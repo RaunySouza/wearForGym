@@ -25,8 +25,8 @@ import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModel
 import java.util.List;
 
 import br.com.rauny.wearforgym.R;
-import br.com.rauny.wearforgym.core.config.AppDatabase;
-import br.com.rauny.wearforgym.core.model.Time;
+import br.com.rauny.wearforgym.config.AppDatabase;
+import br.com.rauny.wearforgym.model.Time;
 import br.com.rauny.wearforgym.ui.fragment.AddCustomTimeFragment;
 import br.com.rauny.wearforgym.ui.recyclerView.DividerItemDecoration;
 import butterknife.BindView;
