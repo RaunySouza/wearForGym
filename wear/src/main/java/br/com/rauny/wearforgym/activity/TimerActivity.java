@@ -96,8 +96,9 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         mVisible = false;
         if (isBound()) {
             mTimerService.runInBackground();
+            mTimerService.setListener(null);
         }
-        mTimerService.setListener(null);
+
         unbindService(this);
         unregisterReceiver(mBroadcastReceiver);
     }
