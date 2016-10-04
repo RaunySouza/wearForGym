@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.ConfirmationActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
@@ -44,9 +45,19 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
             mClockText.setText(mSimpleDateFormat.format(new Date()));
         }
     };
+    private BroadcastReceiver mSyncBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mTime = intent.getLongExtra("value", Constants.defaults.TIME);
+            mCountDownTimer.setStartTime(mTime);
+            mDonutProgress.setMax((int) mTime);
+            mDonutProgress.setProgress((int) mTime);
+        }
+    };
     private long mTime;
     private boolean mStarted;
     private boolean mVisible;
+    private LocalBroadcastManager mLocalBroadcastManager;
 
     @BindView(R.id.count_down_timer)
     CountDownTimerLayout mCountDownTimer;
@@ -63,6 +74,7 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         setContentView(R.layout.activity_timer);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
         mTime = getIntent().getLongExtra(Constants.extra.TIME, Constants.defaults.TIME);
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
@@ -78,6 +90,7 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         Intent intent = new Intent(this, TimerService.class);
         startService(intent);
         bindService(intent, this, Service.BIND_AUTO_CREATE);
+        mLocalBroadcastManager.registerReceiver(mSyncBroadcastReceiver, new IntentFilter("sync"));
     }
 
     @Override
@@ -106,6 +119,7 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
     @Override
     protected void onDestroy() {
         Log.d(TimerActivity.class.getSimpleName(), "Activity Destroyed: " + this);
+        mLocalBroadcastManager.unregisterReceiver(mSyncBroadcastReceiver);
         super.onDestroy();
     }
 

@@ -26,6 +26,7 @@ import java.util.List;
 
 import br.com.rauny.wearforgym.R;
 import br.com.rauny.wearforgym.config.AppDatabase;
+import br.com.rauny.wearforgym.core.api.WearableApi;
 import br.com.rauny.wearforgym.model.Time;
 import br.com.rauny.wearforgym.ui.fragment.AddCustomTimeFragment;
 import br.com.rauny.wearforgym.ui.recyclerView.DividerItemDecoration;
@@ -35,6 +36,7 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
+    private WearableApi mWearableApi;
     private List<Time> mTimes;
 
     @BindView(R.id.time_list)
@@ -57,6 +59,15 @@ public class MainActivity extends AppCompatActivity {
         mTimesRecyclerView.setAdapter(new TimeListAdapter());
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new TimeListItemTouchHelperCallback());
         itemTouchHelper.attachToRecyclerView(mTimesRecyclerView);
+
+        mWearableApi = WearableApi.getInstance(this);
+        mWearableApi.connect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mWearableApi.disconnect();
     }
 
     private void loadTimeList() {
@@ -123,6 +134,9 @@ public class MainActivity extends AppCompatActivity {
                 notifyDataSetChanged();
 
                 //Send to wearable new value
+                Bundle bundle = new Bundle();
+                bundle.putLong("value", time.getMillis());
+                mWearableApi.sendData(bundle);
             });
         }
 

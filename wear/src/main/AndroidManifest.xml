@@ -30,6 +30,13 @@
             android:name="android.support.wearable.activity.ConfirmationActivity"/>
 
         <service android:name=".service.TimerService"/>
+        <service
+            android:name=".service.WearForGymWearableListenerService" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED"/>
+            </intent-filter>
+        </service>
 
     </application>
 
