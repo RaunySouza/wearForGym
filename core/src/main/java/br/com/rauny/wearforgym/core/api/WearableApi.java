@@ -71,15 +71,15 @@ public class WearableApi {
         sendMessage(message, null);
     }
 
-    public void sendData(Bundle data) {
-        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/sync");
+    public void sendData(String path, Bundle data) {
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(path);
         putDataMapRequest.getDataMap().putAll(DataMap.fromBundle(data));
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataMapRequest.asPutDataRequest().setUrgent())
             .setResultCallback(dataItemResult -> {
                 if (dataItemResult.getStatus().isSuccess())
-                    Log.d(WearableApi.class.getSimpleName(), "Data sent");
+                    Log.v(Constants.TAG, "Data sent");
                 else
-                    Log.d(WearableApi.class.getSimpleName(), dataItemResult.getStatus().getStatusMessage());
+                    Log.d(Constants.TAG, dataItemResult.getStatus().getStatusMessage());
             });
     }
 }

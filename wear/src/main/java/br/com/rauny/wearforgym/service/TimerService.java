@@ -14,13 +14,12 @@ import android.util.Log;
 import br.com.rauny.wearforgym.R;
 import br.com.rauny.wearforgym.Util.ContextUtil;
 import br.com.rauny.wearforgym.activity.TimerActivity;
+import br.com.rauny.wearforgym.core.api.Constants;
 
 /**
  * @author raunysouza
  */
 public class TimerService extends Service {
-
-	private static final String TAG = TimerService.class.getSimpleName();
 
 	public static final int NOTIFICATION_ID = 1;
 
@@ -42,27 +41,27 @@ public class TimerService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-        Log.d(TAG, "Creating Service: " + this);
+        Log.v(Constants.TAG, "Creating Service: " + this);
 		notificationManager = NotificationManagerCompat.from(this);
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-        Log.d(TAG, "Destroying Service: " + this);
+        Log.v(Constants.TAG, "Destroying Service: " + this);
 		cancelNotification();
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.i(TAG, "Binding Service");
+		Log.v(Constants.TAG, "Binding Service");
 
 		return mBinder;
 	}
 
 	@Override
 	public boolean onUnbind(Intent intent) {
-		Log.i(TAG, "Unbinding Service");
+		Log.v(Constants.TAG, "Unbinding Service");
 		return super.onUnbind(intent);
 	}
 
@@ -90,7 +89,7 @@ public class TimerService extends Service {
 
 		createCountDownTimer(time);
 
-		Log.i(TAG, "Stating CountDown Timer");
+		Log.v(Constants.TAG, "Stating CountDown Timer");
 		mCountDownTimer.start();
 		if (mListener != null) {
 			mListener.onStartCountDown();
@@ -99,7 +98,7 @@ public class TimerService extends Service {
 	}
 
 	public void stop() {
-		Log.i(TAG, "Stopping CountDown Timer");
+		Log.v(Constants.TAG, "Stopping CountDown Timer");
 		mCountDownTimer.cancel();
 		mCountDownTimer = null;
 		if (mNotified) {
@@ -121,7 +120,7 @@ public class TimerService extends Service {
 
 			@Override
 			public void onFinish() {
-				Log.i(TAG, "Timer finished");
+				Log.v(Constants.TAG, "Timer finished");
 				if (mListener != null) {
 					mListener.onFinishCountDown();
 				}

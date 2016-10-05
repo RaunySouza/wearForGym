@@ -13,7 +13,6 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.ConfirmationActivity;
 import android.support.wearable.view.WatchViewStub;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -24,7 +23,8 @@ import java.util.Date;
 
 import br.com.rauny.wearforgym.R;
 import br.com.rauny.wearforgym.Util.ContextUtil;
-import br.com.rauny.wearforgym.constant.Constants;
+import br.com.rauny.wearforgym.core.api.Constants;
+import br.com.rauny.wearforgym.core.api.WearableApi;
 import br.com.rauny.wearforgym.layout.CountDownTimerLayout;
 import br.com.rauny.wearforgym.service.TimerService;
 import butterknife.BindView;
@@ -48,7 +48,7 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
     private BroadcastReceiver mSyncBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mTime = intent.getLongExtra("value", Constants.defaults.TIME);
+            mTime = intent.getLongExtra(Constants.extra.TIME, Constants.defaults.TIME);
             mCountDownTimer.setStartTime(mTime);
             mDonutProgress.setMax((int) mTime);
             mDonutProgress.setProgress((int) mTime);
@@ -58,6 +58,7 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
     private boolean mStarted;
     private boolean mVisible;
     private LocalBroadcastManager mLocalBroadcastManager;
+    private WearableApi mWearableApi;
 
     @BindView(R.id.count_down_timer)
     CountDownTimerLayout mCountDownTimer;
@@ -90,7 +91,10 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         Intent intent = new Intent(this, TimerService.class);
         startService(intent);
         bindService(intent, this, Service.BIND_AUTO_CREATE);
-        mLocalBroadcastManager.registerReceiver(mSyncBroadcastReceiver, new IntentFilter("sync"));
+        mLocalBroadcastManager.registerReceiver(mSyncBroadcastReceiver, new IntentFilter(Constants.path.SYNC));
+        mWearableApi = WearableApi.getInstance(this);
+        mWearableApi.connect();
+        mWearableApi.sendMessage(Constants.path.SYNC);
     }
 
     @Override
@@ -110,16 +114,16 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         if (isBound()) {
             mTimerService.runInBackground();
             mTimerService.setListener(null);
+            unbindService(this);
         }
 
-        unbindService(this);
         unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override
     protected void onDestroy() {
-        Log.d(TimerActivity.class.getSimpleName(), "Activity Destroyed: " + this);
         mLocalBroadcastManager.unregisterReceiver(mSyncBroadcastReceiver);
+        mWearableApi.disconnect();
         super.onDestroy();
     }
 
