@@ -1,16 +1,13 @@
 package br.com.rauny.wearforgym.model;
 
-import android.content.Context;
-
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.sql.language.Set;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import java.util.concurrent.TimeUnit;
-
 import br.com.rauny.wearforgym.config.AppDatabase;
-import br.com.rauny.wearforgym.core.R;
 
 /**
  * @author raunysouza
@@ -22,19 +19,19 @@ public class Time extends BaseModel {
     private long id;
 
     @Column
-	private long time;
+	private int minute;
 
     @Column
-	private TimeUnit timeUnit;
+    private int seconds;
 
     @Column
     private boolean selected;
 
 	public Time() {}
 
-	public Time(long time, TimeUnit timeUnit) {
-		this.time = time;
-		this.timeUnit = timeUnit;
+	public Time(int minute, int seconds) {
+		this.minute = minute;
+        this.seconds = seconds;
 	}
 
     public long getId() {
@@ -45,21 +42,20 @@ public class Time extends BaseModel {
         this.id = id;
     }
 
-    public long getTime() {
-		return time;
-	}
-
-	public void setTime(long time) {
-		this.time = time;
-	}
-
-
-    public TimeUnit getTimeUnit() {
-        return timeUnit;
+    public int getMinute() {
+        return minute;
     }
 
-    public void setTimeUnit(TimeUnit timeUnit) {
-        this.timeUnit = timeUnit;
+    public void setMinute(int minute) {
+        this.minute = minute;
+    }
+
+    public int getSeconds() {
+        return seconds;
+    }
+
+    public void setSeconds(int seconds) {
+        this.seconds = seconds;
     }
 
     public boolean isSelected() {
@@ -71,13 +67,34 @@ public class Time extends BaseModel {
     }
 
     public long getMillis() {
-        return timeUnit.toMillis(time);
+        long minToMillis = minute * 60000;
+        long secToMillis = seconds * 1000;
+        return minToMillis + secToMillis;
     }
 
-    public String format(Context context) {
-        int stringRes = timeUnit.equals(TimeUnit.SECONDS) ? R.string.seconds : R.string.minutes;
-        String unit = context.getString(stringRes);
-        return String.format("%d %s", time, unit);
+    public String format() {
+        return String.format("%02d:%02d", minute, seconds);
     }
 
+    @Override
+    public void save() {
+        updateSelected();
+        super.save();
+    }
+
+    @Override
+    public void update() {
+        updateSelected();
+        super.update();
+    }
+
+    private void updateSelected() {
+        if (selected) {
+            Set<Time> set = SQLite.update(Time.class).set(Time_Table.selected.eq(false));
+            if (id > 0) {
+                set.where(Time_Table.id.notEq(id));
+            }
+            set.execute();
+        }
+    }
 }

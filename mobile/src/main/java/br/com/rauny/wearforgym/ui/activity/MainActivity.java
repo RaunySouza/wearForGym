@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,18 +20,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction;
 
 import java.util.Date;
 import java.util.List;
 
 import br.com.rauny.wearforgym.R;
-import br.com.rauny.wearforgym.config.AppDatabase;
 import br.com.rauny.wearforgym.core.api.Constants;
 import br.com.rauny.wearforgym.core.api.WearableApi;
 import br.com.rauny.wearforgym.model.Time;
+import br.com.rauny.wearforgym.model.Time_Table;
 import br.com.rauny.wearforgym.ui.fragment.AddCustomTimeFragment;
 import br.com.rauny.wearforgym.ui.recyclerView.DividerItemDecoration;
 import butterknife.BindView;
@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.time_list)
     RecyclerView mTimesRecyclerView;
+    @BindView(R.id.add_custom_time)
+    FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadTimeList() {
-        mTimes = SQLite.select().from(Time.class).queryList();
+        mTimes = SQLite.select().from(Time.class)
+                .orderBy(Time_Table.minute, true)
+                .orderBy(Time_Table.seconds, true)
+                .queryList();
     }
 
 
@@ -81,10 +86,9 @@ public class MainActivity extends AppCompatActivity {
     public void addCustomTimeClick() {
         AddCustomTimeFragment addCustomTimeFragment = new AddCustomTimeFragment();
         addCustomTimeFragment.setOnSaveListener(time -> {
-            mTimes.add(time);
-            int position = mTimes.size() - 1;
-            mTimesRecyclerView.getAdapter().notifyItemInserted(position);
-            mTimesRecyclerView.scrollToPosition(position);
+            loadTimeList();
+            mTimesRecyclerView.getAdapter().notifyDataSetChanged();
+            Snackbar.make(mFab, R.string.time_saved, Snackbar.LENGTH_SHORT).show();
         });
         addCustomTimeFragment.show(getFragmentManager(), "AddCustomTime");
     }
@@ -112,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(TimeListViewHolder holder, int position) {
             Time time = mTimes.get(position);
 
-            CharSequence text = time.format(MainActivity.this);
+            CharSequence text = time.format();
             if (time.isSelected()) {
                 SpannableString spanned = new SpannableString(text);
                 spanned.setSpan(new StyleSpan(Typeface.BOLD), 0, spanned.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -122,17 +126,9 @@ public class MainActivity extends AppCompatActivity {
             holder.mTimeTextView.setText(text);
 
             holder.itemView.setOnClickListener(v -> {
-                //Set to false previous selected interval and set to true the selected one
-                for (Time mTime : mTimes) {
-                    if (time.equals(mTime))
-                        mTime.setSelected(true);
-                    else if (mTime.isSelected())
-                        mTime.setSelected(false);
-                }
-                FastStoreModelTransaction.updateBuilder(FlowManager.getModelAdapter(Time.class))
-                        .addAll(mTimes)
-                        .build()
-                        .execute(FlowManager.getWritableDatabase(AppDatabase.class));
+                time.setSelected(true);
+                time.update();
+                loadTimeList();
                 notifyDataSetChanged();
 
                 Bundle bundle = new Bundle();
