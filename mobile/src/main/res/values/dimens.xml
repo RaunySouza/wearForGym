@@ -2,5 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="tool_bar_top_padding">24dp</dimen>
+    <dimen name="default_margin">10dp</dimen>
+    <dimen name="time_list_top_bottom_padding">20dp</dimen>
+    <dimen name="remove_icon_margin">10dp</dimen>
 </resources>

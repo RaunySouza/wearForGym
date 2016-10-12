@@ -11,18 +11,17 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
-import br.com.rauny.wearforgym.MainActivity;
 import br.com.rauny.wearforgym.R;
 import br.com.rauny.wearforgym.Util.ContextUtil;
+import br.com.rauny.wearforgym.activity.TimerActivity;
+import br.com.rauny.wearforgym.core.api.Constants;
 
 /**
  * @author raunysouza
  */
 public class TimerService extends Service {
 
-	private static final String TAG = TimerService.class.getSimpleName();
-
-	public static final int NOTIFICATION_ID = 001;
+	public static final int NOTIFICATION_ID = 1;
 
 	private TimerServiceListener mListener;
 
@@ -42,27 +41,33 @@ public class TimerService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+        Log.v(Constants.TAG, "Creating Service: " + this);
 		notificationManager = NotificationManagerCompat.from(this);
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+        Log.v(Constants.TAG, "Destroying Service: " + this);
 		cancelNotification();
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.i(TAG, "Binding Service");
+		Log.v(Constants.TAG, "Binding Service");
 
 		return mBinder;
 	}
 
 	@Override
 	public boolean onUnbind(Intent intent) {
-		Log.i(TAG, "Unbinding Service");
+		Log.v(Constants.TAG, "Unbinding Service");
 		return super.onUnbind(intent);
 	}
+
+    public boolean isRunning() {
+        return mCountDownTimerRunning;
+    }
 
 	public void runInBackground() {
 		if (mCountDownTimerRunning) {
@@ -84,7 +89,7 @@ public class TimerService extends Service {
 
 		createCountDownTimer(time);
 
-		Log.i(TAG, "Stating CountDown Timer");
+		Log.v(Constants.TAG, "Stating CountDown Timer");
 		mCountDownTimer.start();
 		if (mListener != null) {
 			mListener.onStartCountDown();
@@ -93,7 +98,7 @@ public class TimerService extends Service {
 	}
 
 	public void stop() {
-		Log.i(TAG, "Stopping CountDown Timer");
+		Log.v(Constants.TAG, "Stopping CountDown Timer");
 		mCountDownTimer.cancel();
 		mCountDownTimer = null;
 		if (mNotified) {
@@ -115,7 +120,7 @@ public class TimerService extends Service {
 
 			@Override
 			public void onFinish() {
-				Log.i(TAG, "Timer finished");
+				Log.v(Constants.TAG, "Timer finished");
 				if (mListener != null) {
 					mListener.onFinishCountDown();
 				}
@@ -139,7 +144,7 @@ public class TimerService extends Service {
 	}
 
 	private Notification createRunningTimeNotification() {
-		Intent mainAppIntent = new Intent(this, MainActivity.class);
+		Intent mainAppIntent = new Intent(this, TimerActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mainAppIntent, 0);
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
@@ -156,7 +161,7 @@ public class TimerService extends Service {
 	}
 
 	private Notification createTimeOutNotification() {
-		Intent mainAppIntent = new Intent(this, MainActivity.class);
+		Intent mainAppIntent = new Intent(this, TimerActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mainAppIntent, 0);
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);

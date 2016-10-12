@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:2.2.1'
         classpath 'com.github.dcendents:android-maven-plugin:1.2'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
         classpath 'me.tatarka:gradle-retrolambda:3.1.0'
@@ -23,5 +23,12 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
+        maven { url "https://www.jitpack.io" }
+    }
+
+    ext {
+        supportLibVersion = '23.4.0'
+        butterKnifeVersion = '8.0.1'
+        dbflow_version = '3.1.1'
     }
 }
