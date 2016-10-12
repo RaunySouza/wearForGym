@@ -126,6 +126,7 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
     @Override
     protected void onDestroy() {
         mLocalBroadcastManager.unregisterReceiver(mSyncBroadcastReceiver);
+        mWearableApi.disconnect();
         super.onDestroy();
     }
 

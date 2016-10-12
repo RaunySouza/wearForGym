@@ -95,12 +95,12 @@ public class WearableApi implements GoogleApiClient.ConnectionCallbacks, GoogleA
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.d(Constants.TAG, "Connected");
+        Log.d(Constants.TAG, "Connected: " + bundle);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d(Constants.TAG, "Connection Suspended");
+        Log.d(Constants.TAG, "Connection Suspended: " + i);
     }
 
     @Override
