@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <array name="time_units">
-        <item>@string/seconds</item>
-        <item>@string/minutes</item>
-    </array>
-</resources>

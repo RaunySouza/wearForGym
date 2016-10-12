@@ -5,8 +5,6 @@ import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.migration.BaseMigration;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
-import java.util.concurrent.TimeUnit;
-
 import br.com.rauny.wearforgym.model.Time;
 
 /**
@@ -29,35 +27,23 @@ public class AppDatabase {
 
         @Override
         public void migrate(DatabaseWrapper database) {
-            Time timeThirtySeconds = new Time();
-            timeThirtySeconds.setTime(30);
-            timeThirtySeconds.setTimeUnit(TimeUnit.SECONDS);
+            Time timeThirtySeconds = new Time(0, 30);
             timeThirtySeconds.setSelected(true);
             timeThirtySeconds.save(database);
 
-            Time timeFortySeconds = new Time();
-            timeFortySeconds.setTime(40);
-            timeFortySeconds.setTimeUnit(TimeUnit.SECONDS);
+            Time timeFortySeconds = new Time(0, 40);
             timeFortySeconds.save(database);
 
-            Time timeFortyFiveSeconds = new Time();
-            timeFortyFiveSeconds.setTime(45);
-            timeFortyFiveSeconds.setTimeUnit(TimeUnit.SECONDS);
+            Time timeFortyFiveSeconds = new Time(0, 45);
             timeFortyFiveSeconds.save(database);
 
-            Time timeFiftySeconds = new Time();
-            timeFiftySeconds.setTime(50);
-            timeFiftySeconds.setTimeUnit(TimeUnit.SECONDS);
+            Time timeFiftySeconds = new Time(0, 50);
             timeFiftySeconds.save(database);
 
-            Time timeFiftyFiveSeconds = new Time();
-            timeFiftyFiveSeconds.setTime(55);
-            timeFiftyFiveSeconds.setTimeUnit(TimeUnit.SECONDS);
+            Time timeFiftyFiveSeconds = new Time(0, 55);
             timeFiftyFiveSeconds.save(database);
 
-            Time timeOneMinute = new Time();
-            timeOneMinute.setTime(1);
-            timeOneMinute.setTimeUnit(TimeUnit.MINUTES);
+            Time timeOneMinute = new Time(1, 0);
             timeOneMinute.save(database);
         }
     }

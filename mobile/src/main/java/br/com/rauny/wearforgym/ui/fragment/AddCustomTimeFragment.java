@@ -4,23 +4,22 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.CheckBox;
+import android.widget.Toast;
 
-import java.util.concurrent.TimeUnit;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import br.com.rauny.wearforgym.R;
 import br.com.rauny.wearforgym.model.Time;
+import br.com.rauny.wearforgym.model.Time_Table;
+import br.com.rauny.wearforgym.ui.widget.TimePicker;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTextChanged;
 
 /**
  * @author raunysouza
@@ -29,13 +28,15 @@ public class AddCustomTimeFragment extends DialogFragment {
 
     private OnSaveListener mListener;
     private Time mTimeSaved;
+    private int mCurrentMinute;
+    private int mCurrentSeconds;
 
-    @BindView(R.id.time)
-    TextInputEditText mTimeEditText;
-    @BindView(R.id.time_unit)
-    Spinner mTimeUnitSpinner;
+    @BindView(R.id.time_picker)
+    TimePicker mTimePicker;
     @BindView(R.id.save)
     Button mSaveButton;
+    @BindView(R.id.selected)
+    CheckBox mSelectedCheckBox;
 
     @Nullable
     @Override
@@ -48,15 +49,11 @@ public class AddCustomTimeFragment extends DialogFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ArrayAdapter<CharSequence> timeUnitAdapter = ArrayAdapter.createFromResource(
-                getActivity(),
-                R.array.time_units,
-                android.R.layout.simple_spinner_item
-        );
-
-        timeUnitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mTimeUnitSpinner.setAdapter(timeUnitAdapter);
+        mTimePicker.setOnTimeChangedListener(((picker, minute, seconds) -> {
+            mSaveButton.setEnabled(minute != 0 || seconds != 0);
+            mCurrentMinute = minute;
+            mCurrentSeconds = seconds;
+        }));
     }
 
     @Override
@@ -67,14 +64,21 @@ public class AddCustomTimeFragment extends DialogFragment {
 
     @OnClick(R.id.save)
     public void onSaveClick() {
-        long timeLong = Long.parseLong(mTimeEditText.getText().toString());
-        int selectedTimeUnitIndex = mTimeUnitSpinner.getSelectedItemPosition();
-        TimeUnit timeUnit = selectedTimeUnitIndex == 0 ? TimeUnit.SECONDS : TimeUnit.MINUTES;
-        Time time = new Time(timeLong, timeUnit);
-        time.save();
-        mTimeSaved = time;
+        long count = SQLite.select().from(Time.class)
+                .where(Time_Table.minute.eq(mCurrentMinute))
+                .and(Time_Table.seconds.eq(mCurrentSeconds))
+                .count();
 
-        getDialog().dismiss();
+        if (count > 0) {
+            Toast.makeText(getActivity(), R.string.time_already_exists, Toast.LENGTH_SHORT).show();
+        } else {
+            Time time = new Time(mCurrentMinute, mCurrentSeconds);
+            time.setSelected(mSelectedCheckBox.isChecked());
+            time.save();
+            mTimeSaved = time;
+
+            getDialog().dismiss();
+        }
     }
 
     @OnClick(R.id.cancel)
@@ -87,11 +91,6 @@ public class AddCustomTimeFragment extends DialogFragment {
         super.onDismiss(dialog);
         if (mListener != null && mTimeSaved != null)
             mListener.onSave(mTimeSaved);
-    }
-
-    @OnTextChanged(R.id.time)
-    public void onTextChanged(Editable editable) {
-        mSaveButton.setEnabled(editable.length() > 0);
     }
 
     public void setOnSaveListener(OnSaveListener listener) {

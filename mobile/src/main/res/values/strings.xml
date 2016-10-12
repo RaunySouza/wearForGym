@@ -5,4 +5,7 @@
     <string name="type_time">Type Time</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="set_selected">Set selected</string>
+    <string name="time_saved">Time saved successfully</string>
+    <string name="time_already_exists">Time already exists</string>
 </resources>
