@@ -4,4 +4,5 @@
 
     <string name="timer_remaining">Tempo Restante</string>
     <string name="time_out">Tempo Esgotado!</string>
+    <string name="time_updated">Tempo Atualizado</string>
 </resources>

@@ -15,6 +15,7 @@ import android.support.wearable.activity.ConfirmationActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
@@ -50,9 +51,12 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         @Override
         public void onReceive(Context context, Intent intent) {
             mTime = intent.getLongExtra(Constants.extra.TIME, Constants.defaults.TIME);
+            if (mTimerService.isRunning())
+                stop();
             mCountDownTimer.setStartTime(mTime);
             mDonutProgress.setMax((int) mTime);
             mDonutProgress.setProgress((int) mTime);
+            Toast.makeText(TimerActivity.this, R.string.time_updated, Toast.LENGTH_SHORT).show();
         }
     };
     private long mTime;
