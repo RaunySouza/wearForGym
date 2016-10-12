@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wear For Gym</string>
+    <string name="add_time">Adicionar tempo</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Salvar</string>
+    <string name="set_selected">Selecionar</string>
+    <string name="time_saved">Tempo salvo com sucesso</string>
+    <string name="time_already_exists">Tempo já existe</string>
+</resources>
