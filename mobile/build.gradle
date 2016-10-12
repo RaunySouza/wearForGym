@@ -2,12 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 
-apt {
-    arguments {
-        targetModuleName 'WearForGymMobile'
-    }
-}
-
 android {
     compileSdkVersion 23
     buildToolsVersion '23.0.3'

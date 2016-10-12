@@ -13,6 +13,6 @@ public class WearForGymMobile extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        FlowManager.init(new FlowConfig.Builder(this).build());
+        FlowManager.init(new FlowConfig.Builder(this).openDatabasesOnInit(true).build());
     }
 }

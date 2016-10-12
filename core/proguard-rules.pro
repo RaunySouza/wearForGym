@@ -18,4 +18,3 @@
 
 -dontwarn java.lang.invoke.*
 
--keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }

@@ -1,9 +1,11 @@
-package br.com.rauny.wearforgym.constant;
+package br.com.rauny.wearforgym.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.Date;
+
+import br.com.rauny.wearforgym.core.api.Constants;
 
 /**
  * @author raunysouza

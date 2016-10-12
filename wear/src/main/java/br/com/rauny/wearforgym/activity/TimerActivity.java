@@ -10,9 +10,9 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.ConfirmationActivity;
 import android.support.wearable.view.WatchViewStub;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -23,8 +23,10 @@ import java.util.Date;
 
 import br.com.rauny.wearforgym.R;
 import br.com.rauny.wearforgym.Util.ContextUtil;
-import br.com.rauny.wearforgym.constant.Constants;
+import br.com.rauny.wearforgym.core.api.Constants;
+import br.com.rauny.wearforgym.core.api.WearableApi;
 import br.com.rauny.wearforgym.layout.CountDownTimerLayout;
+import br.com.rauny.wearforgym.preference.TimerPreferences;
 import br.com.rauny.wearforgym.service.TimerService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,9 +46,21 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
             mClockText.setText(mSimpleDateFormat.format(new Date()));
         }
     };
+    private BroadcastReceiver mSyncBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mTime = intent.getLongExtra(Constants.extra.TIME, Constants.defaults.TIME);
+            mCountDownTimer.setStartTime(mTime);
+            mDonutProgress.setMax((int) mTime);
+            mDonutProgress.setProgress((int) mTime);
+        }
+    };
     private long mTime;
     private boolean mStarted;
     private boolean mVisible;
+    private LocalBroadcastManager mLocalBroadcastManager;
+    private WearableApi mWearableApi;
+    private TimerPreferences mPreferences;
 
     @BindView(R.id.count_down_timer)
     CountDownTimerLayout mCountDownTimer;
@@ -62,8 +76,10 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mPreferences = TimerPreferences.getInstance(this);
 
-        mTime = getIntent().getLongExtra(Constants.extra.TIME, Constants.defaults.TIME);
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+        mTime = mPreferences.getSelectedTime();
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(s -> {
@@ -78,6 +94,10 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         Intent intent = new Intent(this, TimerService.class);
         startService(intent);
         bindService(intent, this, Service.BIND_AUTO_CREATE);
+        mLocalBroadcastManager.registerReceiver(mSyncBroadcastReceiver, new IntentFilter(Constants.receiver.SYNC));
+        mWearableApi = WearableApi.getInstance(this);
+        mWearableApi.connect();
+        mWearableApi.sendMessage(Constants.path.SYNC);
     }
 
     @Override
@@ -97,15 +117,16 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         if (isBound()) {
             mTimerService.runInBackground();
             mTimerService.setListener(null);
+            unbindService(this);
         }
 
-        unbindService(this);
         unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override
     protected void onDestroy() {
-        Log.d(TimerActivity.class.getSimpleName(), "Activity Destroyed: " + this);
+        mLocalBroadcastManager.unregisterReceiver(mSyncBroadcastReceiver);
+        mWearableApi.disconnect();
         super.onDestroy();
     }
 
