@@ -21,12 +21,12 @@ public class WearForGymWearableListenerService extends WearableListenerService {
     private LocalBroadcastManager localBroadcastManager;
     private TimerPreferences mPreferences;
 
-//    @Override
-//    public void onCreate() {
-//        super.onCreate();
-//        localBroadcastManager = LocalBroadcastManager.getInstance(this);
-//        mPreferences = TimerPreferences.getInstance(this);
-//    }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
+        mPreferences = TimerPreferences.getInstance(this);
+    }
 
     @Override
     public void onDataChanged(DataEventBuffer dataEventBuffer) {

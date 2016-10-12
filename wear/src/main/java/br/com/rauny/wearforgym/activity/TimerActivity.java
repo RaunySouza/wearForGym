@@ -26,6 +26,7 @@ import br.com.rauny.wearforgym.Util.ContextUtil;
 import br.com.rauny.wearforgym.core.api.Constants;
 import br.com.rauny.wearforgym.core.api.WearableApi;
 import br.com.rauny.wearforgym.layout.CountDownTimerLayout;
+import br.com.rauny.wearforgym.preference.TimerPreferences;
 import br.com.rauny.wearforgym.service.TimerService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,6 +60,7 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
     private boolean mVisible;
     private LocalBroadcastManager mLocalBroadcastManager;
     private WearableApi mWearableApi;
+    private TimerPreferences mPreferences;
 
     @BindView(R.id.count_down_timer)
     CountDownTimerLayout mCountDownTimer;
@@ -74,9 +76,10 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mPreferences = TimerPreferences.getInstance(this);
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
-        mTime = getIntent().getLongExtra(Constants.extra.TIME, Constants.defaults.TIME);
+        mTime = mPreferences.getSelectedTime();
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(s -> {
@@ -91,7 +94,7 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         Intent intent = new Intent(this, TimerService.class);
         startService(intent);
         bindService(intent, this, Service.BIND_AUTO_CREATE);
-        mLocalBroadcastManager.registerReceiver(mSyncBroadcastReceiver, new IntentFilter(Constants.path.SYNC));
+        mLocalBroadcastManager.registerReceiver(mSyncBroadcastReceiver, new IntentFilter(Constants.receiver.SYNC));
         mWearableApi = WearableApi.getInstance(this);
         mWearableApi.connect();
         mWearableApi.sendMessage(Constants.path.SYNC);
@@ -123,7 +126,6 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
     @Override
     protected void onDestroy() {
         mLocalBroadcastManager.unregisterReceiver(mSyncBroadcastReceiver);
-        mWearableApi.disconnect();
         super.onDestroy();
     }
 

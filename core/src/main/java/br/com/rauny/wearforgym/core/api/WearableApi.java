@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataMap;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author raunysouza
  */
-public class WearableApi {
+public class WearableApi implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static WearableApi instance;
 
@@ -36,6 +37,8 @@ public class WearableApi {
     private WearableApi(Context context) {
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .build();
     }
 
@@ -52,7 +55,14 @@ public class WearableApi {
     }
 
     public void sendMessage(@NonNull Node node, @NonNull String message, byte[] data) {
-        Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), message, data);
+        Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), message, data)
+                .setResultCallback(result -> {
+                    if (result.getStatus().isSuccess()) {
+                        Log.d(Constants.TAG, "Message Sent");
+                    } else {
+                        Log.e(Constants.TAG, result.getStatus().getStatusMessage());
+                    }
+                });
     }
 
     public void sendMessage(@NonNull Node node, @NonNull String message) {
@@ -79,7 +89,22 @@ public class WearableApi {
                 if (dataItemResult.getStatus().isSuccess())
                     Log.v(Constants.TAG, "Data sent");
                 else
-                    Log.d(Constants.TAG, dataItemResult.getStatus().getStatusMessage());
+                    Log.e(Constants.TAG, dataItemResult.getStatus().getStatusMessage());
             });
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.d(Constants.TAG, "Connected");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(Constants.TAG, "Connection Suspended");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(Constants.TAG, "Connection Failed: " + connectionResult);
     }
 }
