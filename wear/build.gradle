@@ -28,11 +28,14 @@ android {
 }
 
 dependencies {
+    apt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
+    apt "com.github.RaunySouza.preferencer:preferencer-processor:${preferencer_version}"
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':core')
     compile project(':circleProgress')
 
     compile "com.google.android.support:wearable:1.0.0"
     compile "com.jakewharton:butterknife:${butterKnifeVersion}"
-    apt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
+    compile "com.github.RaunySouza.preferencer:preferencer:${preferencer_version}"
 }

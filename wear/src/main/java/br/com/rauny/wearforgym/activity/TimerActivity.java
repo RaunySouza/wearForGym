@@ -27,6 +27,7 @@ import br.com.rauny.wearforgym.Util.ContextUtil;
 import br.com.rauny.wearforgym.core.api.Constants;
 import br.com.rauny.wearforgym.core.api.WearableApi;
 import br.com.rauny.wearforgym.layout.CountDownTimerLayout;
+import br.com.rauny.wearforgym.preference.AbstractTimerPreferences;
 import br.com.rauny.wearforgym.preference.TimerPreferences;
 import br.com.rauny.wearforgym.service.TimerService;
 import butterknife.BindView;
@@ -64,7 +65,7 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
     private boolean mVisible;
     private LocalBroadcastManager mLocalBroadcastManager;
     private WearableApi mWearableApi;
-    private TimerPreferences mPreferences;
+    private AbstractTimerPreferences mPreferences;
 
     @BindView(R.id.count_down_timer)
     CountDownTimerLayout mCountDownTimer;
@@ -116,7 +117,6 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
 
     @Override
     protected void onPause() {
-        super.onPause();
         mVisible = false;
         if (isBound()) {
             mTimerService.runInBackground();
@@ -125,6 +125,7 @@ public class TimerActivity extends Activity implements ServiceConnection, TimerS
         }
 
         unregisterReceiver(mBroadcastReceiver);
+        super.onPause();
     }
 
     @Override
