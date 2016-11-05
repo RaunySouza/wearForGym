@@ -8,5 +8,6 @@
 
     <color name="menu_text_black">#DE000000</color>
     <color name="menu_icon_gray">#8A000000</color>
-    <color name="delete_color">#D32F2F</color>
+    <color name="color_danger">#C9302C</color>
+    <color name="color_success">#5CB85C</color>
 </resources>

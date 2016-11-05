@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:textColor="@color/delete_color"
+            android:textColor="@color/color_danger"
             android:text="@string/cancel"/>
 
         <Button

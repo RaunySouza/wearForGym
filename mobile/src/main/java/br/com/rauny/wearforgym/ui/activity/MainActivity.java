@@ -18,6 +18,7 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -31,7 +32,6 @@ import br.com.rauny.wearforgym.core.api.WearableApi;
 import br.com.rauny.wearforgym.model.Time;
 import br.com.rauny.wearforgym.model.Time_Table;
 import br.com.rauny.wearforgym.ui.fragment.AddCustomTimeFragment;
-import br.com.rauny.wearforgym.ui.recyclerView.DividerItemDecoration;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         loadTimeList();
 
         mTimesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mTimesRecyclerView.addItemDecoration(new DividerItemDecoration(this, R.drawable.divider));
         mTimesRecyclerView.addItemDecoration(new DismissItemDecoration());
         mTimesRecyclerView.setAdapter(new TimeListAdapter());
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new TimeListItemTouchHelperCallback());
@@ -97,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
 
         @BindView(R.id.time)
         TextView mTimeTextView;
+        @BindView(R.id.selected_mark)
+        ImageView mSelectedMarkImageView;
 
         public TimeListViewHolder(View itemView) {
             super(itemView);
@@ -116,25 +117,37 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(TimeListViewHolder holder, int position) {
             Time time = mTimes.get(position);
 
+            if (holder.mSelectedMarkImageView.getVisibility() == View.VISIBLE) {
+                holder.mSelectedMarkImageView.setVisibility(View.GONE);
+            }
             CharSequence text = time.format();
             if (time.isSelected()) {
                 SpannableString spanned = new SpannableString(text);
                 spanned.setSpan(new StyleSpan(Typeface.BOLD), 0, spanned.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 text = spanned;
+
+                if (holder.mSelectedMarkImageView.getVisibility() == View.GONE) {
+                    holder.mSelectedMarkImageView.setVisibility(View.VISIBLE);
+                }
             }
 
             holder.mTimeTextView.setText(text);
 
             holder.itemView.setOnClickListener(v -> {
-                time.setSelected(true);
-                time.update();
-                loadTimeList();
-                notifyDataSetChanged();
+                if (!time.isSelected()) {
+                    if (holder.mSelectedMarkImageView.getVisibility() == View.GONE) {
+                        holder.mSelectedMarkImageView.setVisibility(View.VISIBLE);
+                    }
+                    time.setSelected(true);
+                    time.update();
+                    loadTimeList();
+                    notifyDataSetChanged();
 
-                Bundle bundle = new Bundle();
-                bundle.putLong(Constants.extra.TIME, time.getMillis());
-                bundle.putLong("timestamp", new Date().getTime());
-                mWearableApi.sendData(Constants.path.SYNC, bundle);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong(Constants.extra.TIME, time.getMillis());
+                    bundle.putLong("timestamp", new Date().getTime());
+                    mWearableApi.sendData(Constants.path.SYNC, bundle);
+                }
             });
         }
 
@@ -146,14 +159,19 @@ public class MainActivity extends AppCompatActivity {
 
     public class TimeListItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
+        private static final int MAX_FACTOR = 8;
+        private static final int MIN_FACTOR = 1;
+
         private Drawable mBackground;
         private Drawable mIcon;
         private int mIconMargin;
         private boolean initialized;
+        private int factor = MIN_FACTOR;
+        private boolean dismissable;
 
         private void init() {
             if (!initialized) {
-                mBackground = getDrawable(R.color.delete_color);
+                mBackground = getDrawable(R.color.color_danger);
                 mIcon = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_delete_white_24dp);
                 mIconMargin = (int) getResources().getDimension(R.dimen.remove_icon_margin);
                 initialized = true;
@@ -168,8 +186,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
             Time time = mTimes.get(viewHolder.getAdapterPosition());
-            int movement = time.isSelected() ? 0 : ItemTouchHelper.START;
-            return makeMovementFlags(0, movement);
+            dismissable = !time.isSelected();
+            factor = dismissable ? MIN_FACTOR : MAX_FACTOR;
+            viewHolder.itemView.setTag(android.support.v7.recyclerview.R.id.item_touch_helper_previous_elevation, 2);
+            return makeMovementFlags(0, ItemTouchHelper.START | ItemTouchHelper.END);
         }
 
         @Override
@@ -188,29 +208,62 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        public float getSwipeEscapeVelocity(float defaultValue) {
+            return defaultValue * factor * 10000;
+        }
+
+        @Override
+        public float getSwipeThreshold(RecyclerView.ViewHolder viewHolder) {
+            return dismissable ? super.getSwipeThreshold(viewHolder) : MIN_FACTOR;
+        }
+
+        @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             View itemView = viewHolder.itemView;
             if (viewHolder.getAdapterPosition() == -1) {
                 return;
             }
 
+            int x = (int) dX / factor;
+            if (dismissable) {
+                init();
 
-            init();
-            mBackground.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-            mBackground.draw(c);
+                boolean swipeToLeft = dX < 0;
 
-            int itemHeight = itemView.getBottom() - itemView.getTop();
-            int intrinsicWidth = mIcon.getIntrinsicWidth();
-            int intrinsicHeight = mIcon.getIntrinsicWidth();
+                int left;
+                int right;
+                if (swipeToLeft) {
+                    left = itemView.getRight() + x;
+                    right = itemView.getRight();
+                } else {
+                    left = itemView.getLeft();
+                    right = itemView.getLeft() + x;
+                }
 
-            int iconLeft = itemView.getRight() - mIconMargin - intrinsicWidth;
-            int iconRight = itemView.getRight() - mIconMargin;
-            int iconTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
-            int iconBottom = iconTop + intrinsicHeight;
-            mIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
-            mIcon.draw(c);
+                mBackground.setBounds(left, itemView.getTop(), right, itemView.getBottom());
+                mBackground.draw(c);
 
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                int itemHeight = itemView.getBottom() - itemView.getTop();
+                int intrinsicWidth = mIcon.getIntrinsicWidth();
+                int intrinsicHeight = mIcon.getIntrinsicWidth();
+
+                int iconLeft;
+                int iconRight;
+                if (swipeToLeft) {
+                    iconLeft = itemView.getRight() - mIconMargin - intrinsicWidth;
+                    iconRight = itemView.getRight() - mIconMargin;
+                } else {
+                    iconLeft = itemView.getLeft() + mIconMargin;
+                    iconRight = itemView.getLeft() + mIconMargin + intrinsicWidth;
+                }
+
+                int iconTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
+                int iconBottom = iconTop + intrinsicHeight;
+                mIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+                mIcon.draw(c);
+            }
+
+            super.onChildDraw(c, recyclerView, viewHolder, x, dY, actionState, isCurrentlyActive);
         }
     }
 
@@ -221,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
         private void init() {
             if (!initiated) {
-                background = getDrawable(R.color.delete_color);
+                background = getDrawable(R.color.color_danger);
                 initiated = true;
             }
         }
